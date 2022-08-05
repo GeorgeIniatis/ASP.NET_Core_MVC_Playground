@@ -1,0 +1,9 @@
+﻿@if (ViewBag.Status != null)
+{
+    <script>
+        bootbox.alert({
+            message: "@ViewBag.Status",
+            backdrop: true
+        });
+    </script>
+}

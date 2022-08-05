@@ -1,0 +1,75 @@
+﻿@model ASP.NET_Core_MVC_Playground.Models.OwnerSpreadsheetViewModel
+
+@{
+    ViewData["Title"] = "Upload Owners";
+}
+
+<div class="py-5 text-center">
+    <div class="container">
+        <div class="row">
+            <div class="mx-auto col-lg-6 col-10">
+                <h1>Upload Owners</h1>
+                <hr />
+
+                <form id="UploadOwners-Form" asp-action="UploadOwners" enctype="multipart/form-data">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="container">
+                        <div class="text-center">
+                            <input type="hidden" id="isFileUploaded" />
+                            <input type="file" hidden asp-for="SpreadsheetFile" />
+                            <input type="hidden" asp-for="TestVariable" />
+                            <div class="form-group">
+                                <div class="spreadsheet-dropzone text-center dropzone form-control h-auto" id="spreadsheet-dropzone"
+                                     style="background-color: #f7e6e6;
+                                            border: dashed 3px;
+                                            border-color: red;
+                                            border-radius: 25px;">
+                                    <div class="row pt-2 w-25 mx-auto">
+                                        <div class="col-12">
+                                            <i class="fa-solid fa-file-excel fa-4x"></i>
+                                        </div>
+                                    </div>
+                                    <div class="row pt-2 w-50 mx-auto">
+                                        <div class="col-12">
+                                            <b> <b> Drop Spreadsheet Here </b> </b>
+                                        </div>
+                                    </div>
+                                    <div class="row w-25 mx-auto">
+                                        <div class="col-12">
+                                            <b class="bold-text" style="color: grey;"> <b>  Or </b>  </b>
+                                        </div>
+                                    </div>
+                                    <div class="row pt-2 w-50 mx-auto">
+                                        <div class="col-12">
+                                            <b class="upload-button" style="background-color: red;
+                                                                            border: none;
+                                                                            border-radius: 15px;
+                                                                            color: white;
+                                                                            padding: 10px 20px;
+                                                                            text-align: center;
+                                                                            font-size: 14px;">
+                                                Upload File
+                                            </b>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <button id="SubmitButton" type="submit" class="btn btn-primary">Upload</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@*@section styles{ 
+    <link rel="stylesheet" href="~/css/uploadOwners.css" />
+}*@
+
+@section scripts{
+    @{await Html.RenderPartialAsync("_UploadOwnersPartial"); }
+    @{await Html.RenderPartialAsync("_BootboxAlertPartial"); }
+}

@@ -1,0 +1,40 @@
+﻿@model ASP.NET_Core_MVC_Playground.Data.Tiny
+
+@{
+    ViewData["Title"] = "Setup";
+}
+
+<div class="py-5 text-center">
+    <div class="container">
+        <div class="row">
+            <div class="mx-auto col-lg-6 col-10">
+                <h1>Edit Dynamic Page</h1>
+                <hr>
+
+                <form asp-action="Setup" class="text-left">
+                    <div class="form-group">
+                        <textarea id="TinyTextArea"></textarea>
+                        <input type="hidden" asp-for="Page">
+                        <input type="hidden" asp-for="TextArea">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts{
+    @{await Html.RenderPartialAsync("_TinyTextArea"); }
+}
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,98 @@
+﻿@page
+@model ExternalLoginsModel
+@{
+    ViewData["Title"] = "Manage your external logins";
+    ViewData["ActivePage"] = ManageNavPages.ExternalLogins;
+}
+
+<partial name="_StatusMessage" for="StatusMessage" />
+@if (Model.CurrentLogins?.Count > 0)
+{
+    <h1>Registered Logins</h1>
+    <hr />
+
+    foreach (var login in Model.CurrentLogins)
+    {
+        <div class="row text-left">
+            <div class="col-md-12 py-1 text-left">
+                @if (login.LoginProvider == "Google")
+                {
+                    <button class="btn text-white w-75" id="Google" name="provider" value="Google" style="background: rgb(221, 75, 57); pointer-events:none;"><i class="fa fa-fw fa-1x py-1 fa-brands fa-google"></i>&nbsp;<b>Google</b></button>
+                }
+
+                @if (login.LoginProvider == "Twitter")
+                {
+                    <button class="btn text-white w-75" id="Twitter" name="provider" value="Twitter" style="background: rgb(85, 172, 238); pointer-events: none;"><i class="fa fa-fw fa-1x py-1 fa-brands fa-twitter"></i>&nbsp;<b>Twitter</b></button>
+                }
+
+                @if (login.LoginProvider == "Facebook")
+                {
+                    <button class="btn text-white w-75" id="Facebook" name="provider" value="Facebook" style="background: rgb(59, 89, 152); pointer-events: none;"><i class="fa fa-fw fa-1x py-1 fa-brands fa-facebook-square"></i>&nbsp;<b>Facebook</b></button>
+                }
+
+                @if (login.LoginProvider == "Microsoft")
+                {
+                    <button class="btn text-white w-75 btn-primary" id="Microsoft" name="provider" value="Microsoft" style="pointer-events: none;"><i class="fa fa-fw fa-1x py-1 fa-brands fa-windows"></i>&nbsp;<b>Microsoft</b></button>
+                }
+
+                @if (Model.ShowRemoveButton)
+                {
+                    <form id="@($"remove-login-{login.LoginProvider}")" asp-page-handler="RemoveLogin" method="post" style="display:inline;">
+                        <input asp-for="@login.LoginProvider" name="LoginProvider" type="hidden" />
+                        <input asp-for="@login.ProviderKey" name="ProviderKey" type="hidden" />
+                        <button type="submit" class="btn btn-danger ml-1" value="Remove"><i class="fa-solid fa-trash-can"></i></button>
+                    </form>
+                }
+            </div>
+        </div>
+    }
+    <br />
+}
+
+@if (Model.OtherLogins?.Count > 0)
+{
+    <h1>Add another service to log in.</h1>
+    <hr />
+    <form id="link-login-form" asp-page-handler="LinkLogin" method="post" class="form-horizontal">
+        <div id="socialLoginList">
+            @foreach (var provider in Model.OtherLogins)
+            {
+                if (provider.Name == "Google")
+                {
+                    <div class="row text-left">
+                        <div class="col-md-12 my-1">
+                            <button class="btn text-white w-75" id="Google" name="provider" value="Google" style="background: rgb(221, 75, 57);"><i class="fa fa-fw fa-1x py-1 fa-brands fa-google"></i>&nbsp;<b>Login with Google</b></button>
+                        </div>
+                    </div>
+                }
+
+                if (provider.Name == "Twitter")
+                {
+                    <div class="row text-left">
+                        <div class="col-md-12 my-1">
+                            <button class="btn text-white w-75" id="Twitter" name="provider" value="Twitter" style="background: rgb(85, 172, 238);"><i class="fa fa-fw fa-1x py-1 fa-brands fa-twitter"></i>&nbsp;<b>Login with Twitter</b></button>
+                        </div>
+                    </div>
+                }
+
+                if (provider.Name == "Facebook")
+                {
+                    <div class="row text-left">
+                        <div class="col-md-12 my-1">
+                            <button class="btn text-white w-75" id="Facebook" name="provider" value="Facebook" style="background: rgb(59, 89, 152);"><i class="fa fa-fw fa-1x py-1 fa-brands fa-facebook-square"></i>&nbsp;<b>Login with Facebook</b></button>
+                        </div>
+                    </div>
+                }
+
+                if (provider.Name == "Microsoft")
+                {
+                    <div class="row text-left">
+                        <div class="col-md-12 my-1">
+                            <button class="btn text-white w-75 btn-primary" id="Microsoft" name="provider" value="Microsoft"><i class="fa fa-fw fa-1x py-1 fa-brands fa-windows"></i>&nbsp;<b>Login with Microsoft</b></button>
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+    </form>
+}

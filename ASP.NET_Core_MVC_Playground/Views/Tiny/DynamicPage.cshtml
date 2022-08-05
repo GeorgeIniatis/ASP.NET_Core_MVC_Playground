@@ -1,0 +1,32 @@
+﻿@model ASP.NET_Core_MVC_Playground.Data.Tiny
+
+@{
+    ViewData["Title"] = "Dynamic Page";
+}
+
+<div class="py-5 text-center">
+    <div class="container">
+        <div class="row">
+            <div class="mx-auto col-lg-6 col-10">
+                <h1>Dynamic Page</h1>
+                <hr>
+                @{
+                    if (Model != null)
+                    {
+                        @Html.Raw(Model.TextArea)
+                    }
+                    else
+                    {
+                        <h2> Your page is empty!</h2>
+                        <a class="nav-link" asp-area="" asp-controller="Tiny" asp-action="Setup"><b> Click here to create your page! </b></a>
+                    }
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+

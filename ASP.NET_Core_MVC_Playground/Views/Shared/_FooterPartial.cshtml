@@ -1,0 +1,43 @@
+﻿@using Microsoft.AspNetCore.Builder
+@using Microsoft.AspNetCore.Localization
+@using System.Globalization 
+
+@inject RequestLocalizationOptions LocOptions
+
+@{
+    var requestCulture = Context.Features.Get<IRequestCultureFeature>();
+    var cultures = LocOptions.SupportedUICultures;
+    List<SelectListItem> cultureItems = new();
+    foreach (CultureInfo culture in cultures)
+    {
+        var selected = false;
+        if (culture.Name == System.Threading.Thread.CurrentThread.CurrentUICulture.IetfLanguageTag)
+        {
+            selected = true;
+        }
+        cultureItems.Add(new SelectListItem { Value = culture.Name, Text = culture.NativeName, Selected = selected });
+    };
+}
+
+<div class="text-center">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6">
+                <form id="cultureForm" name="cultureForm" method="POST" asp-controller="" asp-action="ChangeCulture">
+                    <div class="form-group">
+                        <label class="d-inline-block" for="culture">Change Culture:</label>
+                        <select id="culture"
+                                name="culture"
+                                onchange=" document.forms['cultureForm'].submit(); "
+                                class="form-control form-control-sm d-inline-block w-auto"
+                                asp-items="cultureItems">
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="col-md-6">
+                <p class="mb-0 py-1">© 2022 ASP.NET Core Playground. All rights reserved</p>
+            </div>
+        </div>
+    </div>
+</div>

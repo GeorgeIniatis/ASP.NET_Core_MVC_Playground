@@ -1,0 +1,38 @@
+﻿<nav class="navbar navbar-expand-md navbar-dark bg-dark">
+    <div class="container">
+        <button class="navbar-toggler navbar-toggler-right border-0" type="button" data-toggle="collapse" data-target="#navbar12">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbar12">
+            <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
+                <i class="fa d-inline fa-lg fa-flask"></i>
+                <b class="text-justify"> ASP.NET Core MVC Playground </b>
+            </a>
+
+            <ul class="navbar-nav ml-auto">
+                @{
+                    if (Context.User.Identity.IsAuthenticated)
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link" asp-area="" asp-controller="Item" asp-action="Index"><b> @AppResources.Navbar.Items </b></a>
+                        </li>
+                        
+                        if (Context.User.IsInRole("Admin"))
+                        {
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"><b> Admin </b></a>
+                                <div class="dropdown-menu">
+                                    <a class="dropdown-item" asp-area="" asp-controller="Spreadsheet" asp-action="UploadOwners"><b> Upload Owners </b></a>
+                                    <a class="dropdown-item" asp-area="" asp-controller="Tiny" asp-action="Setup"><b> @AppResources.Navbar.PageSetup </b></a>
+                                    <a class="dropdown-item" asp-area="" asp-controller="Tiny" asp-action="DynamicPage"><b> @AppResources.Navbar.DynamicPage </b></a>
+                                    <a class="dropdown-item" asp-action="index.html" asp-controller="LocalizationAdmin"><b> @AppResources.Navbar.LocalizationAdmin</b></a>
+                                </div>
+                            </li>
+                        }
+                    }
+                }
+            </ul>
+            <partial name="_LoginPartial" />
+        </div>
+    </div>
+</nav>
