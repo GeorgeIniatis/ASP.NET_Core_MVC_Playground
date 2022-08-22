@@ -43,7 +43,7 @@
                                         @Html.DisplayNameFor(model => model.OwnerID)
                                     </th>
                                     <th class="text-center">
-                                        @Html.DisplayNameFor(model => model.BorrowerID)
+                                        @Html.DisplayNameFor(model => model.BuyerId)
                                     </th>
                                     <th class="text-center">
                                         @Html.DisplayNameFor(model => model.BorrowedDate)
@@ -76,7 +76,7 @@
                                         @Html.DisplayFor(modelItem => item.Owner.FullName)
                                     </td>
                                     <td class="text-center">
-                                        @Html.DisplayFor(modelItem => item.Borrower.FullName)
+                                        @Html.DisplayFor(modelItem => item.Buyer.FullName)
                                     </td>
                                     <td class="text-center">
                                         @Html.DisplayFor(modelItem => item.BorrowedDate)

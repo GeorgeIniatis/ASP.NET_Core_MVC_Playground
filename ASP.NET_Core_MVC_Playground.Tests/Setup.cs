@@ -37,20 +37,20 @@ namespace ASP.NET_Core_MVC_Playground.Tests
                 }
             };
 
-            List<Borrower> borrowers = new()
+            List<Buyer> buyers = new()
             {
-                new Borrower()
+                new Buyer()
                 {
-                    Id = "Borrower",
-                    FirstName = "Borrower",
-                    LastName = "McBorrower"
+                    Id = "Buyer",
+                    FirstName = "Buyer",
+                    LastName = "McBuyer"
                 },
 
-                new Borrower()
+                new Buyer()
                 {
-                    Id = "Borrower2",
-                    FirstName = "Borrower2",
-                    LastName = "McBorrower"
+                    Id = "Buyer2",
+                    FirstName = "Buyer2",
+                    LastName = "McBuyer"
                 }
             };
 
@@ -62,19 +62,19 @@ namespace ASP.NET_Core_MVC_Playground.Tests
                     Price = 20,
                     Description = "Test Description 1",
                     OwnerID = "OwnerID",
-                    BorrowerID = "Borrower"
+                    BuyerId = "Borrower"
                 },
                 new Item{
                     Name = "TestItem 2",
                     Price = 220,
                     Description = "Test Description 2",
                     OwnerID = "OwnerID2",
-                    BorrowerID = "Borrower2"
+                    BuyerId = "Borrower2"
                 }
             };
 
             mockContext.AddRange(owners);
-            mockContext.AddRange(borrowers);
+            mockContext.AddRange(buyers);
             mockContext.AddRange(items);
             mockContext.SaveChanges();
         }

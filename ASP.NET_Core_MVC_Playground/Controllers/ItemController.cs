@@ -39,13 +39,13 @@ namespace ASP.NET_Core_MVC_Playground.Controllers
 
         public async Task<IActionResult> Index(string searchString)
         {
-            IEnumerable<Item> itemList = _db.Items.Include(i => i.Owner).Include(i => i.Borrower);
+            IEnumerable<Item> itemList = _db.Items.Include(i => i.Owner).Include(i => i.Buyer);
 
             if(!String.IsNullOrEmpty(searchString))
             {
                 itemList = await (from items in _db.Items
                                   where items.Name.Contains(searchString)
-                                  select items).Include(i => i.Owner).Include(i => i.Borrower).ToListAsync();
+                                  select items).Include(i => i.Owner).Include(i => i.Buyer).ToListAsync();
             }
 
             ViewBag.Status = TempData["Message"];
@@ -138,14 +138,14 @@ namespace ASP.NET_Core_MVC_Playground.Controllers
                 List<SelectListItem> borrowers = new();
                 borrowers.Add(new SelectListItem { });
 
-                foreach (Borrower borrower in _db.Borrowers)
+                foreach (Buyer buyer in _db.Buyers)
                 {
                     var selected = false;
-                    if (borrower == item.Borrower)
+                    if (buyer == item.Buyer)
                     {
                         selected = true; 
                     }
-                    borrowers.Add(new SelectListItem { Value = borrower.Id.ToString(), Text = borrower.FullName, Selected = selected });
+                    borrowers.Add(new SelectListItem { Value = buyer.Id.ToString(), Text = buyer.FullName, Selected = selected });
                 }
 
                 ViewBag.owners = owners;
@@ -196,7 +196,7 @@ namespace ASP.NET_Core_MVC_Playground.Controllers
                     model.Item.Description = Encoding.UTF8.GetString(textBytes);
                 }
 
-                if (model.Item.BorrowerID != null)
+                if (model.Item.BuyerId != null)
                 {
                     model.Item.BorrowedDate = DateTime.Now;
                 }

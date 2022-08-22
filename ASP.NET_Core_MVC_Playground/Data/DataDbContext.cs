@@ -19,7 +19,7 @@ namespace ASP.NET_Core_MVC_Playground.Data
 
         public DbSet<Item> Items { get; set; }
         public DbSet<Owner> Owners { get; set; }
-        public DbSet<Borrower> Borrowers { get; set; }
+        public DbSet<Buyer> Buyers { get; set; }
         public DbSet<Tiny> Tinies { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -77,8 +77,8 @@ namespace ASP.NET_Core_MVC_Playground.Data
                     .IsRequired();
             });
 
-            // Borrower Model
-            modelBuilder.Entity<Borrower>(entity =>
+            // Buyer Model
+            modelBuilder.Entity<Buyer>(entity =>
             {
                 entity.HasKey(e => e.Id);
                 entity.Property(e => e.Id).ValueGeneratedOnAdd();
@@ -138,9 +138,9 @@ namespace ASP.NET_Core_MVC_Playground.Data
                 .IsRequired();
 
             modelBuilder.Entity<Item>()
-                .HasOne<Borrower>(i => i.Borrower)
+                .HasOne<Buyer>(i => i.Buyer)
                 .WithMany(ib => ib.ItemsBorrowed)
-                .HasForeignKey(i => i.BorrowerID)
+                .HasForeignKey(i => i.BuyerId)
                 .OnDelete(DeleteBehavior.Cascade);     
         }
     }

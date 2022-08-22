@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ASP.NET_Core_MVC_Playground.Data
 {
-    public class Borrower
+    public class Buyer
     {   
         public string Id { get; set; }
 

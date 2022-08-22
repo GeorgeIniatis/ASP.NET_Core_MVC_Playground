@@ -110,19 +110,19 @@ namespace ASP.NET_Core_MVC_Playground.Data
 
         private void populateBorrowers(DataDbContext context)
         {
-            if (context.Borrowers.Any())
+            if (context.Buyers.Any())
             {
                 _logger.LogInformation("Borrowers already seeded!");
                 return;
             }
 
-            context.Borrowers.AddRange(
-                new Borrower
+            context.Buyers.AddRange(
+                new Buyer
                 {
                     FirstName = "Saul",
                     LastName = "Tigh"
                 },
-                new Borrower
+                new Buyer
                 {
                     FirstName = "Helena",
                     LastName = "Cain"
@@ -135,7 +135,7 @@ namespace ASP.NET_Core_MVC_Playground.Data
         private void populateItemsBorrowing(DataDbContext context)
         {
             var anyBorrowings = (from items in context.Items
-                                 where items.BorrowerID != null
+                                 where items.BuyerId != null
                                  select items).Any();
             if(!anyBorrowings)
             {
@@ -143,9 +143,9 @@ namespace ASP.NET_Core_MVC_Playground.Data
                              where items.Name == "Battlestar Galactica"
                              select items).First();
 
-                galactica.BorrowerID = (from borrowers in context.Borrowers
-                                   where borrowers.FullName == "Saul Tigh"
-                                   select borrowers.Id).First();
+                galactica.BuyerId = (from buyers in context.Buyers
+                                        where buyers.FullName == "Saul Tigh"
+                                        select buyers.Id).First();
 
                 galactica.BorrowedDate = DateTime.Now;
 
@@ -155,9 +155,9 @@ namespace ASP.NET_Core_MVC_Playground.Data
                              where items.Name == "Battlestar Pegasus"
                              select items).First();
 
-                pegasus.BorrowerID = (from borrowers in context.Borrowers
-                                   where borrowers.FullName == "Helena Cain"
-                                   select borrowers.Id).First();
+                pegasus.BuyerId = (from buyers in context.Buyers
+                                      where buyers.FullName == "Helena Cain"
+                                      select buyers.Id).First();
 
                 pegasus.BorrowedDate = DateTime.Now;
 

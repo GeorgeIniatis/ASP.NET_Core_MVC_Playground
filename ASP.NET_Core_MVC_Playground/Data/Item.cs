@@ -28,13 +28,13 @@ namespace ASP.NET_Core_MVC_Playground.Data
         public Owner Owner { get; set; }
 
 
-        [Display(Name = "Borrower", ResourceType = typeof(AppResources.ItemModel))]
+        [Display(Name = "Buyer", ResourceType = typeof(AppResources.ItemModel))]
 #nullable enable
-        public string? BorrowerID { get; set; }
+        public string? BuyerId { get; set; }
 #nullable disable
-        public Borrower Borrower { get; set; }
+        public Buyer Buyer { get; set; }
 
-        [Display(Name = "DataBorrowed", ResourceType = typeof(AppResources.ItemModel))]
+        [Display(Name = "DateBought", ResourceType = typeof(AppResources.ItemModel))]
         public DateTime? BorrowedDate { get; set; }
 
 
