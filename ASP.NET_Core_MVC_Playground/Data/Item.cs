@@ -15,10 +15,13 @@ namespace ASP.NET_Core_MVC_Playground.Data
 
         [Required(ErrorMessageResourceName = "PriceIsRequired", ErrorMessageResourceType = typeof(AppResources.ItemModel))]
         [Display(Name = "Price", ResourceType = typeof(AppResources.ItemModel))]
-        [Range(0, float.MaxValue, ErrorMessage = "Please enter a positive price")]
-        public float Price { get; set; }
+        [Range(0, long.MaxValue, ErrorMessage = "Please enter a positive price")]
+        public long Price { get; set; }
 
         public byte[] ImageBytes { get; set; }
+
+        [Required(ErrorMessageResourceName = "StripeImageUrlIsRequired", ErrorMessageResourceType = typeof(AppResources.ItemModel))]
+        public string StripeImageUrl { get; set; }
 
         [Display(Name = "Description", ResourceType = typeof(AppResources.ItemModel))]
         public string Description { get; set; }

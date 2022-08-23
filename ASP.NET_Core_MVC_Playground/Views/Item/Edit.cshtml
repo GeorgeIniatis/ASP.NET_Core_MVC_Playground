@@ -12,7 +12,7 @@
                 <hr />
                 <form id="Edit-Item-Form" asp-action="Edit" enctype="multipart/form-data" class="text-left">
                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                    
+
                     <input type="hidden" asp-for="Item.Id" />
                     <input type="hidden" asp-for="Item.Description" />
                     <input type="hidden" asp-for="Item.ImageBytes" />
@@ -32,6 +32,10 @@
                                 data-val-required=@AppResources.ItemModel.ValidSeller>
                         </select>
                         <span asp-validation-for="Item.SellerId" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <input asp-for="Item.StripeImageUrl" class="form-control" placeholder="Stripe Image Url" />
+                        <span asp-validation-for="Item.StripeImageUrl" class="text-danger"></span>
                     </div>
                     <div class="form-group">
                         <div class="image-dropzone text-center dropzone form-control h-auto" id="image-dropzone"
@@ -71,10 +75,10 @@
 
                         <input type="hidden" asp-for="ImageFile" />
                         <!--
-                        <label asp-for="ImageFile" class="control-label"></label>
-                        <input type="file" asp-for="ImageFile" class="form-control h-25" data-val="true" data-val-required="Please upload an image" accept=".png, .jpg, .jpeg, .gif" />
-                        <span asp-validation-for="ImageFile" class="text-danger"></span>
-                        -->
+        <label asp-for="ImageFile" class="control-label"></label>
+        <input type="file" asp-for="ImageFile" class="form-control h-25" data-val="true" data-val-required="Please upload an image" accept=".png, .jpg, .jpeg, .gif" />
+        <span asp-validation-for="ImageFile" class="text-danger"></span>
+        -->
                     </div>
                     <div class="form-group">
                         <div class="txt-dropzone text-center dropzone form-control h-auto" id="txt-dropzone"
@@ -113,10 +117,10 @@
                         </div>
                         <input type="hidden" asp-for="TextFile">
                         <!--
-                        <label asp-for="TextFile" class="control-label"></label>
-                        <input type="file" asp-for="TextFile" class="form-control h-25" data-val="true" data-val-required="Please upload a text file" accept=".txt" />
-                        <span asp-validation-for="TextFile" class="text-danger"></span>
-                        -->
+        <label asp-for="TextFile" class="control-label"></label>
+        <input type="file" asp-for="TextFile" class="form-control h-25" data-val="true" data-val-required="Please upload a text file" accept=".txt" />
+        <span asp-validation-for="TextFile" class="text-danger"></span>
+        -->
                     </div>
                     <div class="form-group row">
                         <div class="col">

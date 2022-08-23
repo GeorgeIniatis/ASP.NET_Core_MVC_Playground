@@ -2,41 +2,45 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using ASP.NET_Core_MVC_Playground.Controllers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using Stripe;
 
 namespace ASP.NET_Core_MVC_Playground.Data
 {
     public class SeedData
     {
+        private readonly DataDbContext _db;
         private readonly ILogger _logger;
+        private readonly Helpers helpers;
 
-        public SeedData(ILogger<SeedData> logger)
+        public SeedData(DataDbContext db, ILogger<SeedData> logger, Helpers Helpers)
         {
+            _db = db;
             _logger = logger;
+            helpers = Helpers;
         }
 
         public void Initialize(IServiceProvider serviceProvider)
         {
-            using (var context = new DataDbContext(serviceProvider.GetRequiredService<DbContextOptions<DataDbContext>>()))
-            {
-                populateSellers(context);
-                populateItems(context);
-                populateBuyers(context);
-                populateItemPurchases(context);
-            }
+            populateSellers();
+            populateItems();
+            populateBuyers();
+            populateItemPurchases();
         }
 
-        private void populateSellers(DataDbContext context)
+        private void populateSellers()
         {
-            if (context.Sellers.Any())
+            if (_db.Sellers.Any())
             {
                 _logger.LogInformation("Sellers already seeded!");
                 return;
             }
 
-            context.Sellers.AddRange(
+            _db.Sellers.AddRange(
                     new Seller
                     {
                         FirstName = "George",
@@ -53,70 +57,80 @@ namespace ASP.NET_Core_MVC_Playground.Data
                     }
                 );
 
-            context.SaveChanges();
+            _db.SaveChanges();
             _logger.LogInformation("Sellers seeded!");
         }
 
-        private void populateItems(DataDbContext context)
+        private void populateItems()
         {
-            if (context.Items.Any())
+            if (_db.Items.Any())
             {
                 _logger.LogInformation("Items already seeded!");
                 return;
             }
-            
-            context.Items.AddRange(
+
+            _db.Items.AddRange(
                 new Item
                 {
                     Name = "Xbox",
                     Price = 400,
-                    SellerId = (from sellers in context.Sellers
+                    SellerId = (from sellers in _db.Sellers
                                 where sellers.FullName == "George Iniatis"
                                 select sellers.Id).First(),
-                    Description = "Xbox Series X Console"
+                    Description = "Xbox Series X Console",
+                    StripeImageUrl = "https://img-prod-cms-rt-microsoft-com.akamaized.net/cms/api/am/imageFileData/RE4mRni?ver=a707"
                 },
                 new Item
                 {
                     Name = "Phone",
                     Price = 600,
-                    SellerId = (from sellers in context.Sellers
+                    SellerId = (from sellers in _db.Sellers
                                 where sellers.FullName == "George Iniatis"
                                 select sellers.Id).First(),
-                    Description = "Galaxy S21 5G Smartphone"
+                    Description = "Galaxy S21 5G Smartphone",
+                    StripeImageUrl = "https://www.mytrendyphone.eu/images/Samsung-Galaxy-S21-5G-128GB-Phantom-Grey-8806090892776-18012021-01-p.jpg"
                 },
                 new Item
                 {
                     Name = "Battlestar Galactica",
                     Price = 15000,
-                    SellerId = (from sellers in context.Sellers
+                    SellerId = (from sellers in _db.Sellers
                                 where sellers.FullName == "Bill Adama"
                                 select sellers.Id).First(),
-                    Description = "The pride of the colonial fleet"
+                    Description = "The pride of the colonial fleet",
+                    StripeImageUrl = "https://rpggamer.org/uploaded_images/Bsg_damaged.jpg"
                 },
                 new Item
                 {
                     Name = "Battlestar Pegasus",
                     Price = 30000,
-                    SellerId = (from sellers in context.Sellers
+                    SellerId = (from sellers in _db.Sellers
                                 where sellers.FullName == "Bill Adama"
                                 select sellers.Id).First(),
-                    Description = "Improved battlestar but lacking in leadership"
+                    Description = "Improved battlestar but lacking in leadership",
+                    StripeImageUrl = "https://static.wikia.nocookie.net/galactica/images/3/30/BattlestarPegasusPegasus.png/revision/latest?cb=20220308163308"
                 }
             );
 
-            context.SaveChanges();
+            // Save to Db
+            _db.SaveChanges();
+            // Create Stripe Products
+            foreach(Item item in _db.Items)
+            {
+                helpers.createStripeProduct(item);
+            }
             _logger.LogInformation("Items seeded!");
         }
 
-        private void populateBuyers(DataDbContext context)
+        private void populateBuyers()
         {
-            if (context.Buyers.Any())
+            if (_db.Buyers.Any())
             {
                 _logger.LogInformation("Buyers already seeded!");
                 return;
             }
 
-            context.Buyers.AddRange(
+            _db.Buyers.AddRange(
                 new Buyer
                 {
                     FirstName = "Saul",
@@ -128,42 +142,42 @@ namespace ASP.NET_Core_MVC_Playground.Data
                     LastName = "Cain"
                 }
             );
-            context.SaveChanges();
+            _db.SaveChanges();
             _logger.LogInformation("Buyers seeded!");
         }
 
-        private void populateItemPurchases(DataDbContext context)
+        private void populateItemPurchases()
         {
-            var anyBorrowings = (from items in context.Items
+            var anyBorrowings = (from items in _db.Items
                                  where items.BuyerId != null
                                  select items).Any();
             if(!anyBorrowings)
             {
-                Item galactica = (from items in context.Items
+                Item galactica = (from items in _db.Items
                              where items.Name == "Battlestar Galactica"
                              select items).First();
 
-                galactica.BuyerId = (from buyers in context.Buyers
+                galactica.BuyerId = (from buyers in _db.Buyers
                                      where buyers.FullName == "Saul Tigh"
                                      select buyers.Id).First();
 
                 galactica.DateBought = DateTime.Now;
 
-                context.Items.Update(galactica);
+                _db.Items.Update(galactica);
 
-                Item pegasus = (from items in context.Items
+                Item pegasus = (from items in _db.Items
                                 where items.Name == "Battlestar Pegasus"
                                 select items).First();
 
-                pegasus.BuyerId = (from buyers in context.Buyers
+                pegasus.BuyerId = (from buyers in _db.Buyers
                                    where buyers.FullName == "Helena Cain"
                                    select buyers.Id).First();
 
                 pegasus.DateBought = DateTime.Now;
 
-                context.Items.Update(pegasus);
+                _db.Items.Update(pegasus);
 
-                context.SaveChanges();
+                _db.SaveChanges();
                 _logger.LogInformation("Item Borrowings seeded!");
 
             }

@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using Stripe;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -21,11 +23,13 @@ namespace ASP.NET_Core_MVC_Playground.Controllers
     {
         private readonly DataDbContext _db;
         private readonly ILogger _logger;
+        private readonly Helpers helpers;
 
-        public ItemController(DataDbContext db, ILogger<ItemController> logger)
+        public ItemController(DataDbContext db, ILogger<ItemController> logger, Helpers Helpers)
         {
             _db = db;
             _logger = logger;
+            helpers = Helpers;
         }
 
         // Alternative Way
@@ -54,7 +58,7 @@ namespace ASP.NET_Core_MVC_Playground.Controllers
 
         public IActionResult Create()
         {
-            List<SelectListItem> sellers = getSellersAsSelectListItems();
+            List<SelectListItem> sellers = helpers.getSellersAsSelectListItems();
 
             ViewBag.sellers = sellers;
             return View();
@@ -99,7 +103,7 @@ namespace ASP.NET_Core_MVC_Playground.Controllers
                     return View();
                 }
                 
-                saveItem(model.Item);
+                helpers.saveItem(model.Item);
 
                 TempData["Message"] = "Item created successfully!";
                 _logger.LogInformation("Item Created with Name:{ItemName}",model.Item.Name);
@@ -116,7 +120,7 @@ namespace ASP.NET_Core_MVC_Playground.Controllers
         public async Task<IActionResult> Edit(int Id)
         {
             ItemImageViewModel model = new();
-            Item item = await getItemObject(Id);
+            Item item = await helpers.getItemObject(Id);
             model.Item = item;
 
             if (item != null)
@@ -203,12 +207,12 @@ namespace ASP.NET_Core_MVC_Playground.Controllers
 
                 try
                 {
-                    await updateItem(model.Item);
+                    await helpers.updateItem(model.Item);
                 }
                 catch (DbUpdateConcurrencyException ex)
                 {
                     _logger.LogInformation(ex, "Exception when trying to update item {ItemName}", model.Item.Name);
-                    if (getItemObject(model.Item.Id) == null)
+                    if (helpers.getItemObject(model.Item.Id) == null)
                     {
                         return NotFound();
                     }
@@ -230,11 +234,11 @@ namespace ASP.NET_Core_MVC_Playground.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Remove(int Id)
         {
-            Item item = await getItemObject(Id);
+            Item item = await helpers.getItemObject(Id);
 
             if (item != null)
             {
-                removeItem(item);
+                helpers.removeItem(item);
                 TempData["Message"] = "Item removed successfully!";
             }
             else
@@ -245,92 +249,6 @@ namespace ASP.NET_Core_MVC_Playground.Controllers
         }
 
         // Helper Functions
-        private async Task<Item> getItemObject(int Id)
-        {
-            Item item = await (from items in _db.Items
-                               where items.Id == Id
-                               select items).FirstOrDefaultAsync();
-            return item;
-        }
-
-        private void saveItem(Item item)
-        {
-            _db.Items.Add(item);
-            _db.SaveChanges();
-        }
-
-        private async Task updateItem(Item item)
-        {
-            _db.Items.Update(item);   
-            if (await _db.SaveChangesAsync() > 0)
-            {
-                return;
-            }
-        }
-
-        private void removeItem(Item item)
-        {
-            _db.Remove(item);
-            _db.SaveChanges();
-        }
-
-        private List<SelectListItem> getSellersAsSelectListItems()
-        {
-            List<SelectListItem> sellers = new();
-            sellers.Add(new SelectListItem { Value = String.Empty, Text= "Seller"});
-
-            foreach (Seller seller in _db.Sellers)
-            {
-                sellers.Add(new SelectListItem { Value = seller.Id.ToString(), Text = seller.FullName });
-            }
-
-            return sellers;
-        }
-
-        public FileContentResult getImg(int itemId)
-        {
-            byte[] byteArray = (from items in _db.Items
-                                where items.Id == itemId
-                                select items.ImageBytes).FirstOrDefault();
-
-            if (byteArray != null)
-            {
-                return new FileContentResult(byteArray, "image/jpeg");
-            }
-            return null;
-        }
-
-        private byte[] processImage(IFormFile ImageFile)
-        {
-            if (ImageFile != null)
-            {
-                if ((ImageFile.Length > 0) & (ImageFile.ContentType.Split("/")[0] == "image"))
-                {
-                    var image = Image.FromStream(ImageFile.OpenReadStream());
-                    var resized = new Bitmap(image, new Size(256, 256));
-                    using (var imageStream = new MemoryStream())
-                    {
-                        resized.Save(imageStream, ImageFormat.Jpeg);
-                        return imageStream.ToArray();
-                    }
-                }
-            }
-            return null;
-        }
-
-        private string processTextFile(IFormFile TextFile)
-        {
-            if(TextFile != null)
-            {
-                if ((TextFile.Length > 0) & (TextFile.ContentType == "text/plain"))
-                {
-                    using (var streamReader = new StreamReader(TextFile.OpenReadStream()))
-                    {
-                        return streamReader.ReadToEnd();
-                    }
-                }
-            }
-            return null;
-        }
+        
     }
 }

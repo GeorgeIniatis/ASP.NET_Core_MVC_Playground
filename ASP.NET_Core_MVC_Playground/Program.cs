@@ -1,9 +1,12 @@
+using ASP.NET_Core_MVC_Playground.Controllers;
 using ASP.NET_Core_MVC_Playground.Data;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Serilog;
 using System;
 using System.Collections.Generic;
@@ -37,7 +40,11 @@ namespace ASP.NET_Core_MVC_Playground
                 {
                     logger.LogInformation("Attempting to seed DB");
 
-                    SeedData seedData = new(services.GetRequiredService<ILogger<SeedData>>());
+                    SeedData seedData = new(services.GetRequiredService<DataDbContext>(),
+                                            services.GetRequiredService<ILogger<SeedData>>(),
+                                            new Helpers(services.GetRequiredService<DataDbContext>(),
+                                                        services.GetRequiredService<ILogger<Helpers>>(),
+                                                        services.GetRequiredService<IOptions<StripeOptions>>()));
                     seedData.Initialize(services);
                 }
                 catch (Exception ex)

@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
+using Microsoft.Extensions.Options;
 using Moq;
 using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
@@ -20,13 +21,15 @@ namespace ASP.NET_Core_MVC_Playground.Tests
 
         public ItemController getController(DataDbContext context)
         {
-            var mockLogger = new Logger<ItemController>(new NullLoggerFactory());
+            var mockOptions = Options.Create(new StripeOptions());
+            var mockHelper = new Helpers(context, new Logger<Helpers>(new NullLoggerFactory()), mockOptions);
 
+            var mockLogger = new Logger<ItemController>(new NullLoggerFactory());
             var httpContext = new DefaultHttpContext();
             var tempData = new TempDataDictionary(httpContext, Mock.Of<ITempDataProvider>());
             tempData["Status"] = "";
 
-            ItemController itemController = new ItemController(context, mockLogger)
+            ItemController itemController = new ItemController(context, mockLogger, mockHelper)
             {
                 TempData = tempData
             };

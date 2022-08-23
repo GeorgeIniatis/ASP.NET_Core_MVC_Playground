@@ -23,6 +23,7 @@ using System.Globalization;
 using Microsoft.AspNetCore.Localization;
 using ASP.NET_Core_MVC_Playground.Areas.Identity.Data;
 using Microsoft.Extensions.Logging;
+using ASP.NET_Core_MVC_Playground.Controllers;
 
 namespace ASP.NET_Core_MVC_Playground
 {
@@ -111,11 +112,15 @@ namespace ASP.NET_Core_MVC_Playground
                 .AddViewLocalization()
                 .AddDataAnnotationsLocalization();
 
+            services.AddOptions();
             services.AddTransient<IEmailSender, AuthMessageSender>();
             services.AddTransient<ISmsSender, AuthMessageSender>();
             services.AddTransient<IViewLocalizer, DbResViewLocalizer>();
+            services.Configure<StripeOptions>(Configuration.GetSection("Stripe"));
             services.Configure<AuthMessageSenderOptionsSendgrid>(Configuration.GetSection("EmailService:Sendgrid"));
             services.Configure<AuthMessageSenderOptionsTwilio>(Configuration.GetSection("SmsService:Twilio"));
+
+            services.AddScoped(typeof(Helpers));
 
             services.AddAuthentication().AddGoogle(options => {
                 IConfigurationSection googleAuthNSection =

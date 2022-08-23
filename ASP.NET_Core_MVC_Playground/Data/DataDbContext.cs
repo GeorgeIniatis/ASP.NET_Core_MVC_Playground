@@ -71,6 +71,11 @@ namespace ASP.NET_Core_MVC_Playground.Data
                 entity.Property(e => e.ImageBytes)
                     .HasColumnType("varbinary(MAX)");
 
+                entity.Property(e => e.StripeImageUrl)
+                    .HasColumnType("varchar(200)")
+                    .HasMaxLength(200)
+                    .IsRequired();
+
                 entity.Property(e => e.Description)
                     .HasColumnType("varchar(250)")
                     .HasMaxLength(250)
