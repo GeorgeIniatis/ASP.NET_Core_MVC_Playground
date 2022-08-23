@@ -78,19 +78,6 @@ namespace ASP.NET_Core_MVC_Playground
             return sellers;
         }
 
-        public FileContentResult getImg(int itemId)
-        {
-            byte[] byteArray = (from items in _db.Items
-                                where items.Id == itemId
-                                select items.ImageBytes).FirstOrDefault();
-
-            if (byteArray != null)
-            {
-                return new FileContentResult(byteArray, "image/jpeg");
-            }
-            return null;
-        }
-
         private byte[] processImage(IFormFile ImageFile)
         {
             if (ImageFile != null)

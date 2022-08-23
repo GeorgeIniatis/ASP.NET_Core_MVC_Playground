@@ -104,6 +104,7 @@ namespace ASP.NET_Core_MVC_Playground.Controllers
                 }
                 
                 helpers.saveItem(model.Item);
+                helpers.createStripeProduct(model.Item);
 
                 TempData["Message"] = "Item created successfully!";
                 _logger.LogInformation("Item Created with Name:{ItemName}",model.Item.Name);
@@ -249,6 +250,17 @@ namespace ASP.NET_Core_MVC_Playground.Controllers
         }
 
         // Helper Functions
-        
+        public FileContentResult getImg(int itemId)
+        {
+            byte[] byteArray = (from items in _db.Items
+                                where items.Id == itemId
+                                select items.ImageBytes).FirstOrDefault();
+
+            if (byteArray != null)
+            {
+                return new FileContentResult(byteArray, "image/jpeg");
+            }
+            return null;
+        }
     }
 }

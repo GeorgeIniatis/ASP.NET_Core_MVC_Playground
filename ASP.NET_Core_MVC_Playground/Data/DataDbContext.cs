@@ -21,6 +21,8 @@ namespace ASP.NET_Core_MVC_Playground.Data
         public DbSet<Seller> Sellers { get; set; }
         public DbSet<Buyer> Buyers { get; set; }
         public DbSet<Tiny> Tinies { get; set; }
+        public DbSet<ShoppingBasket> ShoppingBaskets { get; set; }
+        public DbSet<ShoppingBasketItem> ShoppingBasketItems { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -119,6 +121,19 @@ namespace ASP.NET_Core_MVC_Playground.Data
                     .HasComputedColumnSql("dbo.CalculateTotalOwned([Id])");
             });
 
+            // Shopping Basket Model
+            modelBuilder.Entity<ShoppingBasket>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.Id).ValueGeneratedOnAdd();            
+            });
+
+            // Shopping Basket Item Model
+            modelBuilder.Entity<ShoppingBasketItem>(entity =>
+            {
+                entity.HasKey(e => new { e.ShoppingBasketId, e.ItemId });
+            });
+
             // Tiny Model
             modelBuilder.Entity<Tiny>(entity =>
             {
@@ -135,6 +150,10 @@ namespace ASP.NET_Core_MVC_Playground.Data
                 .HasIndex(o => o.Email)
                 .IsUnique();
 
+            /* ONE Item has ONE Seller. That Seller can own MANY Items. 
+             * The Foreign Key to the Item table is the SellerId
+             * If a Seller is deleted any Items owned will also be deleted
+             */
             modelBuilder.Entity<Item>()
                 .HasOne<Seller>(i => i.Seller)
                 .WithMany(io => io.ItemsOwned)
@@ -142,11 +161,46 @@ namespace ASP.NET_Core_MVC_Playground.Data
                 .OnDelete(DeleteBehavior.Cascade)
                 .IsRequired();
 
+            /* ONE Item can have ONE Buyer. That Buyer can buy MANY Items. 
+             * The Foreign Key to the Item table is the BuyerId
+             * If a Buyer is deleted the Item Buyer will be set to NULL
+             */
             modelBuilder.Entity<Item>()
                 .HasOne<Buyer>(i => i.Buyer)
-                .WithMany(ib => ib.ItemsBorrowed)
+                .WithMany(ib => ib.ItemsBought)
                 .HasForeignKey(i => i.BuyerId)
-                .OnDelete(DeleteBehavior.Cascade);     
+                .OnDelete(DeleteBehavior.SetNull);
+
+            /* ONE Shopping Basket has ONE Buyer
+             * The Foreign Key to the Shopping Basket table is the BuyerId
+             * If a Buyer is deleted the Shopping Basket will also be deleted
+             */
+            modelBuilder.Entity<ShoppingBasket>()
+                .HasOne<Buyer>(i => i.Buyer)
+                .WithOne(x => x.ShoppingBasket)
+                .HasForeignKey<ShoppingBasket>(y => y.BuyerId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            /* ONE Shopping Basket Item has one Item. That Item can be in MANY Shopping Basket entries
+             * The Foreigh Key to the Shopping Basket Item table is the ItemId
+             * If an Item is deleted the Shopping Basket Items entries associated with it will also be deleted
+             */
+            modelBuilder.Entity<ShoppingBasketItem>()
+                .HasOne<Item>(i => i.Item)
+                .WithMany(x => x.ShoppingBasketItems)
+                .HasForeignKey(y => y.ItemId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            /* ONE Shopping Basket Item has one Shopping Basket. That Shopping Basket can be in MANY Shopping Basket entries
+             * The Foreign Key to the Shopping Basket Item is the ShoppingBasketId
+             * A Shopping Basket cannot be deleted unless all the associated Shopping Basket Entries have also been deleted
+             */
+            modelBuilder.Entity<ShoppingBasketItem>()
+                .HasOne<ShoppingBasket>(i => i.ShoppingBasket)
+                .WithMany(x => x.ShoppingBasketItems)
+                .HasForeignKey(y => y.ShoppingBasketId)
+                .OnDelete(DeleteBehavior.Restrict);
+
         }
     }
 }

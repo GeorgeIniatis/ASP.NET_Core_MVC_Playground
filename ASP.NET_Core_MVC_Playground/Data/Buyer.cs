@@ -16,8 +16,10 @@ namespace ASP.NET_Core_MVC_Playground.Data
 
         public string FullName { get; set; }
 
-        [Display(Name = "Items Borrowed")]
-        public List<Item> ItemsBorrowed { get; set; }
+        [Display(Name = "Items Bought")]
+        public List<Item> ItemsBought { get; set; }
+
+        public ShoppingBasket ShoppingBasket { get; set; }
 
         [Display(Name = "Total Owed")]
         public float? TotalOwed { get; set; }
