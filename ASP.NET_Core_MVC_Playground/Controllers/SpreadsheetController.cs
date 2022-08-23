@@ -20,7 +20,7 @@ namespace ASP.NET_Core_MVC_Playground.Controllers
             _logger = logger;
         }
 
-        public IActionResult UploadOwners()
+        public IActionResult UploadSellers()
         {
             ViewBag.Status = TempData["Message"];
             return View();
@@ -28,7 +28,7 @@ namespace ASP.NET_Core_MVC_Playground.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult UploadOwners(OwnerSpreadsheetViewModel model)
+        public IActionResult UploadSellers(OwnerSpreadsheetViewModel model)
         {
             using (var stream = new MemoryStream())
             {
@@ -58,10 +58,10 @@ namespace ASP.NET_Core_MVC_Playground.Controllers
                         var dataset = reader.AsDataSet(configuration);
 
                         // Using DataSet
-                        processOwnersSpreadsheetAsDataSet(dataset.Tables[0]);
+                        processSellersSpreadsheetAsDataSet(dataset.Tables[0]);
 
                         // Using Reader
-                        // processOwnersSpreadsheet(reader);
+                        // processSellersSpreadsheet(reader);
                     }
                 }
                 else
@@ -72,17 +72,17 @@ namespace ASP.NET_Core_MVC_Playground.Controllers
                         var dataset = reader.AsDataSet(configuration);
       
                         // Using DataSet
-                        processOwnersSpreadsheetAsDataSet(dataset.Tables[0]);
+                        processSellersSpreadsheetAsDataSet(dataset.Tables[0]);
 
                         // Using Reader
-                        //processOwnersSpreadsheet(reader);
+                        //processSellersSpreadsheet(reader);
                     }
                 }
             }
             return View();
         }
 
-        private void processOwnersSpreadsheetAsDataSet(DataTable table)
+        private void processSellersSpreadsheetAsDataSet(DataTable table)
         {
             if (table.Columns.Count != 4)
             {
@@ -105,21 +105,21 @@ namespace ASP.NET_Core_MVC_Playground.Controllers
                         int phoneNumber = int.Parse(row["PhoneNumber"].ToString());
                         string email = row["Email"].ToString();
 
-                        Owner owner = (from owners in _db.Owners
+                        Seller seller = (from owners in _db.Sellers
                                        where owners.Email == email
                                        select owners).FirstOrDefault();
-                        if (owner != null)
+                        if (seller != null)
                         {
-                            owner.FirstName = firstName;
-                            owner.LastName = lastName;
-                            owner.PhoneNumber = phoneNumber;
-                            owner.Email = email;
+                            seller.FirstName = firstName;
+                            seller.LastName = lastName;
+                            seller.PhoneNumber = phoneNumber;
+                            seller.Email = email;
 
-                            _db.Owners.Update(owner);
+                            _db.Sellers.Update(seller);
                         }
                         else
                         {
-                            Owner newOwner = new()
+                            Seller newSeller = new()
                             {
                                 FirstName = firstName,
                                 LastName = lastName,
@@ -127,7 +127,7 @@ namespace ASP.NET_Core_MVC_Playground.Controllers
                                 Email = email,
                             };
 
-                            _db.Owners.Add(newOwner);
+                            _db.Sellers.Add(newSeller);
                         }
                     }
                     catch (System.Exception)
@@ -150,7 +150,7 @@ namespace ASP.NET_Core_MVC_Playground.Controllers
             }
         }
 
-        private void processOwnersSpreadsheet(IExcelDataReader reader)
+        private void processSellersSpreadsheet(IExcelDataReader reader)
         {
             if (reader.FieldCount != 4)
             {
@@ -181,21 +181,21 @@ namespace ASP.NET_Core_MVC_Playground.Controllers
                             int phoneNumber = int.Parse(reader.GetValue(2).ToString());
                             string email = reader.GetValue(3).ToString();
 
-                            Owner owner = (from owners in _db.Owners
+                            Seller seller = (from owners in _db.Sellers
                                                       where owners.Email == email
                                                       select owners).FirstOrDefault();
-                            if (owner != null)
+                            if (seller != null)
                             {
-                                owner.FirstName = firstName;
-                                owner.LastName = lastName;
-                                owner.PhoneNumber = phoneNumber;
-                                owner.Email = email;
+                                seller.FirstName = firstName;
+                                seller.LastName = lastName;
+                                seller.PhoneNumber = phoneNumber;
+                                seller.Email = email;
 
-                                _db.Owners.Update(owner);
+                                _db.Sellers.Update(seller);
                             }
                             else
                             {
-                                Owner newOwner = new()
+                                Seller newSeller = new()
                                 {
                                     FirstName = firstName,
                                     LastName = lastName,
@@ -203,7 +203,7 @@ namespace ASP.NET_Core_MVC_Playground.Controllers
                                     Email = email,
                                 };
 
-                                _db.Owners.Add(newOwner);
+                                _db.Sellers.Add(newSeller);
                             }
                         }
                         catch (System.Exception)
@@ -224,7 +224,7 @@ namespace ASP.NET_Core_MVC_Playground.Controllers
                         currentRow++;
                     }
                 }
-                TempData["Message"] = "Owner upload complete!";
+                TempData["Message"] = "Seller upload complete!";
             }
         }
     }

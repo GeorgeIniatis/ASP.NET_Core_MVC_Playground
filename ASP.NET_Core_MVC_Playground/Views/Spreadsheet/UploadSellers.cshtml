@@ -8,10 +8,10 @@
     <div class="container">
         <div class="row">
             <div class="mx-auto col-lg-6 col-10">
-                <h1>Upload Owners</h1>
+                <h1>Upload Sellers</h1>
                 <hr />
 
-                <form id="UploadOwners-Form" asp-action="UploadOwners" enctype="multipart/form-data">
+                <form id="UploadSellers-Form" asp-action="UploadSellers" enctype="multipart/form-data">
                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                     <div class="container">
                         <div class="text-center">
@@ -70,6 +70,6 @@
 }*@
 
 @section scripts{
-    @{await Html.RenderPartialAsync("_UploadOwnersPartial"); }
+    @{await Html.RenderPartialAsync("_UploadSellersPartial"); }
     @{await Html.RenderPartialAsync("_BootboxAlertPartial"); }
 }

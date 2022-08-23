@@ -18,14 +18,14 @@ namespace ASP.NET_Core_MVC_Playground.Data
         }
 
         public DbSet<Item> Items { get; set; }
-        public DbSet<Owner> Owners { get; set; }
+        public DbSet<Seller> Sellers { get; set; }
         public DbSet<Buyer> Buyers { get; set; }
         public DbSet<Tiny> Tinies { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            // Owner Model
-            modelBuilder.Entity<Owner>(entity =>
+            // Seller Model
+            modelBuilder.Entity<Seller>(entity =>
             {
                 entity.HasKey(e => e.Id);
                 entity.Property(e => e.Id).ValueGeneratedOnAdd();
@@ -102,8 +102,8 @@ namespace ASP.NET_Core_MVC_Playground.Data
 
 	               -- Add the T-SQL statements to compute the return value here
 	               SELECT @TotalOwned = SUM(Price)
-						                FROM dbo.Borrowers as B, dbo.Items as I
-	                                    WHERE (B.Id = @BorrowerID) AND (B.Id = I.BorrowerID)
+						                FROM dbo.Buyers as B, dbo.Items as I
+	                                    WHERE (B.Id = @BuyerId) AND (B.Id = I.BuyerId
 
 	               -- Return the result of the function
 	               RETURN @TotalOwned
@@ -126,14 +126,14 @@ namespace ASP.NET_Core_MVC_Playground.Data
             });
 
             // Relationships
-            modelBuilder.Entity<Owner>()
+            modelBuilder.Entity<Seller>()
                 .HasIndex(o => o.Email)
                 .IsUnique();
 
             modelBuilder.Entity<Item>()
-                .HasOne<Owner>(i => i.Owner)
+                .HasOne<Seller>(i => i.Seller)
                 .WithMany(io => io.ItemsOwned)
-                .HasForeignKey(i => i.OwnerID)
+                .HasForeignKey(i => i.SellerId)
                 .OnDelete(DeleteBehavior.Cascade)
                 .IsRequired();
 

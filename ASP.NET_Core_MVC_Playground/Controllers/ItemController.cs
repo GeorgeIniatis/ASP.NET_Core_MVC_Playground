@@ -39,13 +39,13 @@ namespace ASP.NET_Core_MVC_Playground.Controllers
 
         public async Task<IActionResult> Index(string searchString)
         {
-            IEnumerable<Item> itemList = _db.Items.Include(i => i.Owner).Include(i => i.Buyer);
+            IEnumerable<Item> itemList = _db.Items.Include(i => i.Seller).Include(i => i.Buyer);
 
             if(!String.IsNullOrEmpty(searchString))
             {
                 itemList = await (from items in _db.Items
                                   where items.Name.Contains(searchString)
-                                  select items).Include(i => i.Owner).Include(i => i.Buyer).ToListAsync();
+                                  select items).Include(i => i.Seller).Include(i => i.Buyer).ToListAsync();
             }
 
             ViewBag.Status = TempData["Message"];
@@ -54,9 +54,9 @@ namespace ASP.NET_Core_MVC_Playground.Controllers
 
         public IActionResult Create()
         {
-            List<SelectListItem> owners = getOwnersAsSelectListItems();
+            List<SelectListItem> sellers = getSellersAsSelectListItems();
 
-            ViewBag.owners = owners;
+            ViewBag.sellers = sellers;
             return View();
         }
 
@@ -121,22 +121,22 @@ namespace ASP.NET_Core_MVC_Playground.Controllers
 
             if (item != null)
             {
-                List<SelectListItem> owners = new();
-                owners.Add(new SelectListItem { });
+                List<SelectListItem> sellers = new();
+                sellers.Add(new SelectListItem { Value = String.Empty, Text = "Seller" });
 
-                foreach (Owner owner in _db.Owners)
+                foreach (Seller seller in _db.Sellers)
                 {
                     var selected = false;
-                    if (owner == item.Owner)
+                    if (seller == item.Seller)
                     {
                         selected = true;
                     }
-                    owners.Add(new SelectListItem { Value = owner.Id.ToString(), Text = owner.FullName, Selected = selected });
+                    sellers.Add(new SelectListItem { Value = seller.Id.ToString(), Text = seller.FullName, Selected = selected });
 
                 }
 
-                List<SelectListItem> borrowers = new();
-                borrowers.Add(new SelectListItem { });
+                List<SelectListItem> buyers = new();
+                buyers.Add(new SelectListItem { });
 
                 foreach (Buyer buyer in _db.Buyers)
                 {
@@ -145,11 +145,11 @@ namespace ASP.NET_Core_MVC_Playground.Controllers
                     {
                         selected = true; 
                     }
-                    borrowers.Add(new SelectListItem { Value = buyer.Id.ToString(), Text = buyer.FullName, Selected = selected });
+                    buyers.Add(new SelectListItem { Value = buyer.Id.ToString(), Text = buyer.FullName, Selected = selected });
                 }
 
-                ViewBag.owners = owners;
-                ViewBag.borrowers = borrowers;
+                ViewBag.sellers = sellers;
+                ViewBag.buyers = buyers;
 
                 return View(model);
             }
@@ -161,7 +161,7 @@ namespace ASP.NET_Core_MVC_Playground.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        //[Bind("Id,Name,Price,OwnerID,BorrowerID")]
+        //[Bind("Id,Name,Price,SellerId,BuyerId")]
         public async Task<IActionResult> Edit(int Id,  ItemImageViewModel model, IFormFile ImageFile, IFormFile TextFile)
         {
             if (Id != model.Item.Id)
@@ -171,9 +171,9 @@ namespace ASP.NET_Core_MVC_Playground.Controllers
 
             if (ModelState.IsValid)
             {
-                if (model.Item.OwnerID == null)
+                if (model.Item.SellerId == null)
                 {
-                    TempData["Message"] = "The Item needs to have an Owner!";
+                    TempData["Message"] = "The Item needs to have a Seller!";
                     return RedirectToAction("Index");
                 }
 
@@ -198,7 +198,7 @@ namespace ASP.NET_Core_MVC_Playground.Controllers
 
                 if (model.Item.BuyerId != null)
                 {
-                    model.Item.BorrowedDate = DateTime.Now;
+                    model.Item.DateBought = DateTime.Now;
                 }
 
                 try
@@ -274,17 +274,17 @@ namespace ASP.NET_Core_MVC_Playground.Controllers
             _db.SaveChanges();
         }
 
-        private List<SelectListItem> getOwnersAsSelectListItems()
+        private List<SelectListItem> getSellersAsSelectListItems()
         {
-            List<SelectListItem> owners = new();
-            owners.Add(new SelectListItem { Value = String.Empty, Text= "Owner"});
+            List<SelectListItem> sellers = new();
+            sellers.Add(new SelectListItem { Value = String.Empty, Text= "Seller"});
 
-            foreach (Owner owner in _db.Owners)
+            foreach (Seller seller in _db.Sellers)
             {
-                owners.Add(new SelectListItem { Value = owner.Id.ToString(), Text = owner.FullName });
+                sellers.Add(new SelectListItem { Value = seller.Id.ToString(), Text = seller.FullName });
             }
 
-            return owners;
+            return sellers;
         }
 
         public FileContentResult getImg(int itemId)

@@ -11,7 +11,7 @@ namespace ASP.NET_Core_MVC_Playground.Tests
     {
         public IEnumerator<object[]> GetEnumerator()
         {
-            Owner owner1 = new()
+            Seller seller1 = new()
             {
                 Id = "OwnerID",
                 FirstName = "John",
@@ -24,17 +24,17 @@ namespace ASP.NET_Core_MVC_Playground.Tests
                     Name = "TestItem 1",
                     Price = 20,
                     Description = "Test Description 1",
-                    OwnerID = owner1.Id,
+                    SellerId = seller1.Id,
                 },
                 new Item{
                     Name = "TestItem 2",
                     Price = 220,
                     Description = "Test Description 2",
-                    OwnerID = owner1.Id,
+                    SellerId = seller1.Id,
                 }
             };
 
-            Owner owner2 = new()
+            Seller seller2 = new()
             {
                 Id = "OwnerID",
                 FirstName = "John",
@@ -42,26 +42,26 @@ namespace ASP.NET_Core_MVC_Playground.Tests
                 ItemsOwned = items
             };
 
-            yield return new object[] { owner1 };
-            yield return new object[] { owner2 };
+            yield return new object[] { seller1 };
+            yield return new object[] { seller2 };
         }
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
     }
 
-    public class TestOwner
+    public class TestSeller
     {
         [Theory]
         [ClassData(typeof(ValidOwnerTestData))]
-        public void ValidOwnerIsNotNull(Owner owner)
+        public void ValidOwnerIsNotNull(Seller seller)
         {
-            Assert.NotNull(owner);
+            Assert.NotNull(seller);
         }
 
         [Theory]
         [ClassData(typeof(ValidOwnerTestData))]
-        public void ValidOwnerIsTypeOwner(Owner owner)
+        public void ValidOwnerIsTypeOwner(Seller seller)
         {
-            Assert.IsType<Owner>(owner);
+            Assert.IsType<Seller>(seller);
         }
     }
 }

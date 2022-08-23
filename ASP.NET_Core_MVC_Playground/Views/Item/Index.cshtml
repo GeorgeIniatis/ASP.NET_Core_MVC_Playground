@@ -40,13 +40,13 @@
                                         @Html.DisplayNameFor(model => model.Price)
                                     </th>
                                     <th class="text-center">
-                                        @Html.DisplayNameFor(model => model.OwnerID)
+                                        @Html.DisplayNameFor(model => model.SellerId)
                                     </th>
                                     <th class="text-center">
                                         @Html.DisplayNameFor(model => model.BuyerId)
                                     </th>
                                     <th class="text-center">
-                                        @Html.DisplayNameFor(model => model.BorrowedDate)
+                                        @Html.DisplayNameFor(model => model.DateBought)
                                     </th>
                                     <th class="text-center">
                                         @AppResources.ItemIndex.Image
@@ -73,13 +73,13 @@
                                         $@Html.DisplayFor(modelItem => item.Price)
                                     </td>
                                     <td class="text-center">
-                                        @Html.DisplayFor(modelItem => item.Owner.FullName)
+                                        @Html.DisplayFor(modelItem => item.Seller.FullName)
                                     </td>
                                     <td class="text-center">
                                         @Html.DisplayFor(modelItem => item.Buyer.FullName)
                                     </td>
                                     <td class="text-center">
-                                        @Html.DisplayFor(modelItem => item.BorrowedDate)
+                                        @Html.DisplayFor(modelItem => item.DateBought)
                                     </td>
                                     <td class="text-center">
                                         <div>

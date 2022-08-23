@@ -21,30 +21,30 @@ namespace ASP.NET_Core_MVC_Playground.Data
         {
             using (var context = new DataDbContext(serviceProvider.GetRequiredService<DbContextOptions<DataDbContext>>()))
             {
-                populateOwners(context);
+                populateSellers(context);
                 populateItems(context);
-                populateBorrowers(context);
-                populateItemsBorrowing(context);
+                populateBuyers(context);
+                populateItemPurchases(context);
             }
         }
 
-        private void populateOwners(DataDbContext context)
+        private void populateSellers(DataDbContext context)
         {
-            if (context.Owners.Any())
+            if (context.Sellers.Any())
             {
-                _logger.LogInformation("Owners already seeded!");
+                _logger.LogInformation("Sellers already seeded!");
                 return;
             }
 
-            context.Owners.AddRange(
-                    new Owner
+            context.Sellers.AddRange(
+                    new Seller
                     {
                         FirstName = "George",
                         LastName = "Iniatis",
                         PhoneNumber = 99355566,
                         Email = "jogeo98@hotmail.com"
                     },
-                    new Owner
+                    new Seller
                     {
                         FirstName = "Bill",
                         LastName = "Adama",
@@ -54,7 +54,7 @@ namespace ASP.NET_Core_MVC_Playground.Data
                 );
 
             context.SaveChanges();
-            _logger.LogInformation("Owners seeded!");
+            _logger.LogInformation("Sellers seeded!");
         }
 
         private void populateItems(DataDbContext context)
@@ -70,36 +70,36 @@ namespace ASP.NET_Core_MVC_Playground.Data
                 {
                     Name = "Xbox",
                     Price = 400,
-                    OwnerID = (from owners in context.Owners
-                             where owners.FullName == "George Iniatis"
-                             select owners.Id).First(),
+                    SellerId = (from sellers in context.Sellers
+                                where sellers.FullName == "George Iniatis"
+                                select sellers.Id).First(),
                     Description = "Xbox Series X Console"
                 },
                 new Item
                 {
                     Name = "Phone",
                     Price = 600,
-                    OwnerID = (from owners in context.Owners
-                             where owners.FullName == "George Iniatis"
-                             select owners.Id).First(),
+                    SellerId = (from sellers in context.Sellers
+                                where sellers.FullName == "George Iniatis"
+                                select sellers.Id).First(),
                     Description = "Galaxy S21 5G Smartphone"
                 },
                 new Item
                 {
                     Name = "Battlestar Galactica",
                     Price = 15000,
-                    OwnerID = (from owners in context.Owners
-                             where owners.FullName == "Bill Adama"
-                             select owners.Id).First(),
+                    SellerId = (from sellers in context.Sellers
+                                where sellers.FullName == "Bill Adama"
+                                select sellers.Id).First(),
                     Description = "The pride of the colonial fleet"
                 },
                 new Item
                 {
                     Name = "Battlestar Pegasus",
                     Price = 30000,
-                    OwnerID = (from owners in context.Owners
-                             where owners.FullName == "Bill Adama"
-                             select owners.Id).First(),
+                    SellerId = (from sellers in context.Sellers
+                                where sellers.FullName == "Bill Adama"
+                                select sellers.Id).First(),
                     Description = "Improved battlestar but lacking in leadership"
                 }
             );
@@ -108,11 +108,11 @@ namespace ASP.NET_Core_MVC_Playground.Data
             _logger.LogInformation("Items seeded!");
         }
 
-        private void populateBorrowers(DataDbContext context)
+        private void populateBuyers(DataDbContext context)
         {
             if (context.Buyers.Any())
             {
-                _logger.LogInformation("Borrowers already seeded!");
+                _logger.LogInformation("Buyers already seeded!");
                 return;
             }
 
@@ -129,10 +129,10 @@ namespace ASP.NET_Core_MVC_Playground.Data
                 }
             );
             context.SaveChanges();
-            _logger.LogInformation("Borrowers seeded!");
+            _logger.LogInformation("Buyers seeded!");
         }
 
-        private void populateItemsBorrowing(DataDbContext context)
+        private void populateItemPurchases(DataDbContext context)
         {
             var anyBorrowings = (from items in context.Items
                                  where items.BuyerId != null
@@ -144,22 +144,22 @@ namespace ASP.NET_Core_MVC_Playground.Data
                              select items).First();
 
                 galactica.BuyerId = (from buyers in context.Buyers
-                                        where buyers.FullName == "Saul Tigh"
-                                        select buyers.Id).First();
+                                     where buyers.FullName == "Saul Tigh"
+                                     select buyers.Id).First();
 
-                galactica.BorrowedDate = DateTime.Now;
+                galactica.DateBought = DateTime.Now;
 
                 context.Items.Update(galactica);
 
                 Item pegasus = (from items in context.Items
-                             where items.Name == "Battlestar Pegasus"
-                             select items).First();
+                                where items.Name == "Battlestar Pegasus"
+                                select items).First();
 
                 pegasus.BuyerId = (from buyers in context.Buyers
-                                      where buyers.FullName == "Helena Cain"
-                                      select buyers.Id).First();
+                                   where buyers.FullName == "Helena Cain"
+                                   select buyers.Id).First();
 
-                pegasus.BorrowedDate = DateTime.Now;
+                pegasus.DateBought = DateTime.Now;
 
                 context.Items.Update(pegasus);
 

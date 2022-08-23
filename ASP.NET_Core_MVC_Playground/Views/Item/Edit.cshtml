@@ -26,12 +26,12 @@
                         <span asp-validation-for="Item.Price" class="text-danger"></span>
                     </div>
                     <div class="form-group">
-                        <select name="Item.OwnerID" class="form-control"
-                                asp-items="@ViewBag.owners"
+                        <select name="Item.SellerId" class="form-control"
+                                asp-items="@ViewBag.sellers"
                                 data-val="true"
-                                data-val-required=@AppResources.ItemModel.ValidOwner>
+                                data-val-required=@AppResources.ItemModel.ValidSeller>
                         </select>
-                        <span asp-validation-for="Item.OwnerID" class="text-danger"></span>
+                        <span asp-validation-for="Item.SellerId" class="text-danger"></span>
                     </div>
                     <div class="form-group">
                         <div class="image-dropzone text-center dropzone form-control h-auto" id="image-dropzone"

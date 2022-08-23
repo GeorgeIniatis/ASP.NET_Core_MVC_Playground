@@ -97,7 +97,7 @@ namespace ASP.NET_Core_MVC_Playground.Tests
                     Name = "TestItem 3",
                     Price = 420,
                     Description = "Test Description 3",
-                    OwnerID = "OwnerID",
+                    SellerId = "OwnerID",
                 };
 
                 model.Item = item;

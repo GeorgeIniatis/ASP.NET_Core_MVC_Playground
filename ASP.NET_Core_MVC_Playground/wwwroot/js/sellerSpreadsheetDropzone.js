@@ -11,7 +11,7 @@ Dropzone.options.spreadsheetDropzone = { // camelized version of the `id`
     dictDefaultMessage: "",
     autoProcessQueue: false,
     addRemoveLinks: true,
-    url: "/Spreadsheet/UploadOwners",
+    url: "/Spreadsheet/UploadSellers",
     createImageThumbnails: true,
     acceptedFiles: 'text/csv, application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
     accept: function (file, done) {

@@ -23,9 +23,9 @@ namespace ASP.NET_Core_MVC_Playground.Data
         [Display(Name = "Description", ResourceType = typeof(AppResources.ItemModel))]
         public string Description { get; set; }
 
-        [Display(Name = "Owner", ResourceType = typeof(AppResources.ItemModel))]
-        public string OwnerID { get; set; }
-        public Owner Owner { get; set; }
+        [Display(Name = "Seller", ResourceType = typeof(AppResources.ItemModel))]
+        public string SellerId { get; set; }
+        public Seller Seller { get; set; }
 
 
         [Display(Name = "Buyer", ResourceType = typeof(AppResources.ItemModel))]
@@ -35,7 +35,7 @@ namespace ASP.NET_Core_MVC_Playground.Data
         public Buyer Buyer { get; set; }
 
         [Display(Name = "DateBought", ResourceType = typeof(AppResources.ItemModel))]
-        public DateTime? BorrowedDate { get; set; }
+        public DateTime? DateBought { get; set; }
 
 
 
