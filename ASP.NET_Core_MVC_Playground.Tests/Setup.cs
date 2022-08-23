@@ -19,8 +19,8 @@ namespace ASP.NET_Core_MVC_Playground.Tests
             optionsBuilder.UseInMemoryDatabase(Guid.NewGuid().ToString());
             mockContext = new DataDbContext(optionsBuilder.Options);
 
-            // Add Owners
-            List<Seller> owners = new()
+            // Add Sellers
+            List<Seller> sellers = new()
             {
                 new Seller()
                 {
@@ -73,7 +73,7 @@ namespace ASP.NET_Core_MVC_Playground.Tests
                 }
             };
 
-            mockContext.AddRange(owners);
+            mockContext.AddRange(sellers);
             mockContext.AddRange(buyers);
             mockContext.AddRange(items);
             mockContext.SaveChanges();
