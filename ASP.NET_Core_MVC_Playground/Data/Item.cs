@@ -30,15 +30,8 @@ namespace ASP.NET_Core_MVC_Playground.Data
         public string SellerId { get; set; }
         public Seller Seller { get; set; }
 
-        [Display(Name = "Buyer", ResourceType = typeof(AppResources.ItemModel))]
-#nullable enable
-        public string? BuyerId { get; set; }
-#nullable disable
-        public Buyer Buyer { get; set; }
-
-        [Display(Name = "DateBought", ResourceType = typeof(AppResources.ItemModel))]
-        public DateTime? DateBought { get; set; }
-
         public List<ShoppingBasketItem> ShoppingBasketItems { get; set; }
+
+        public List<BoughtItem> BoughtItems { get; set; }
     }
 }

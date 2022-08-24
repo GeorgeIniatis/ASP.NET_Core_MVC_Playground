@@ -148,37 +148,50 @@ namespace ASP.NET_Core_MVC_Playground.Data
 
         private void populateItemPurchases()
         {
-            var anyBorrowings = (from items in _db.Items
-                                 where items.BuyerId != null
-                                 select items).Any();
-            if(!anyBorrowings)
+            var anyBoughtItems = (from boughItems in _db.BoughtItems
+                                  select boughItems).Any();
+            if (!anyBoughtItems)
             {
-                Item galactica = (from items in _db.Items
+                Item item = (from items in _db.Items
                              where items.Name == "Battlestar Galactica"
                              select items).First();
 
-                galactica.BuyerId = (from buyers in _db.Buyers
-                                     where buyers.FullName == "Saul Tigh"
-                                     select buyers.Id).First();
+                Buyer buyer = (from buyers in _db.Buyers
+                               where buyers.FullName == "Saul Tigh"
+                               select buyers).First();
 
-                galactica.DateBought = DateTime.Now;
+                BoughtItem newBoughtItem = new()
+                {
+                    Buyer = buyer,
+                    BuyerId = buyer.Id,
+                    Item = item,
+                    ItemId = item.Id,
+                    DateBought = DateTime.Now
+                };
 
-                _db.Items.Update(galactica);
+                _db.BoughtItems.Add(newBoughtItem);
 
-                Item pegasus = (from items in _db.Items
-                                where items.Name == "Battlestar Pegasus"
-                                select items).First();
+                Item item2 = (from items in _db.Items
+                              where items.Name == "Battlestar Pegasus"
+                              select items).First();
 
-                pegasus.BuyerId = (from buyers in _db.Buyers
-                                   where buyers.FullName == "Helena Cain"
-                                   select buyers.Id).First();
+                Buyer buyer2 = (from buyers in _db.Buyers
+                                where buyers.FullName == "Helena Cain"
+                                select buyers).First();
 
-                pegasus.DateBought = DateTime.Now;
+                BoughtItem newBoughtItem2 = new()
+                {
+                    Buyer = buyer2,
+                    BuyerId = buyer2.Id,
+                    Item = item2,
+                    ItemId = item2.Id,
+                    DateBought = DateTime.Now
+                };
 
-                _db.Items.Update(pegasus);
+                _db.BoughtItems.Add(newBoughtItem2);
 
                 _db.SaveChanges();
-                _logger.LogInformation("Item Borrowings seeded!");
+                _logger.LogInformation("Bought Items seeded!");
 
             }
         }

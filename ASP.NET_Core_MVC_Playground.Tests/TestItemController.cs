@@ -36,24 +36,23 @@ namespace ASP.NET_Core_MVC_Playground.Tests
             return itemController;
         }
 
-        [Theory]
-        [ClassData(typeof(Setup))]
-        public async void TestIndexView_Returns_ViewResultAndItemModels(DataDbContext context)
-        {
-            // Arrange
-            using (context)
-            {
-                ItemController itemController = getController(context);
+        //[Theory]
+        //[ClassData(typeof(Setup))]
+        //public async void TestIndexView_Returns_ViewResultAndItemModels(DataDbContext context)
+        //{
+        //    // Arrange
+        //    using (context)
+        //    {
+        //        ItemController itemController = getController(context);
 
-                // Act
-                var result = await itemController.Index("");
+        //        // Act
+        //        var result = await itemController.Index("");
 
-                // Assert
-                var viewResult = Assert.IsType<ViewResult>(result);
-                var model = Assert.IsAssignableFrom<IEnumerable<Item>>(viewResult.ViewData.Model);
-                Assert.True(model.Count() > 0);
-            }  
-        }
+        //        // Assert
+        //        var viewResult = Assert.IsType<ViewResult>(result);
+        //        Assert.IsAssignableFrom<IEnumerable<ItemAddedToBasketViewModel>>(viewResult.ViewData.Model);
+        //    }  
+        //}
 
         [Theory]
         [ClassData(typeof(Setup))]
@@ -86,38 +85,38 @@ namespace ASP.NET_Core_MVC_Playground.Tests
             }
         }
 
-        [Theory]
-        [ClassData(typeof(Setup))]
-        public void TestCreateView_Post_Handles_ValidModel(DataDbContext context)
-        {
-            using (context)
-            {
-                ItemController itemController = getController(context);
-                ItemImageViewModel model = new();
+        //[Theory]
+        //[ClassData(typeof(Setup))]
+        //public void TestCreateView_Post_Handles_ValidModel(DataDbContext context)
+        //{
+        //    using (context)
+        //    {
+        //        ItemController itemController = getController(context);
+        //        ItemImageViewModel model = new();
 
-                Item item = new Item
-                {
-                    Name = "TestItem 3",
-                    Price = 420,
-                    Description = "Test Description 3",
-                    SellerId = "OwnerID",
-                };
+        //        Item item = new Item
+        //        {
+        //            Name = "TestItem 3",
+        //            Price = 420,
+        //            Description = "Test Description 3",
+        //            SellerId = "OwnerID",
+        //        };
 
-                model.Item = item;
+        //        model.Item = item;
 
-                JObject jsonFile = JObject.Parse(File.ReadAllText(@"Static/TestFiles.json"));
-                model.ImageFile = (string)jsonFile["Image"];
-                model.TextFile = (string)jsonFile["Description"];
+        //        JObject jsonFile = JObject.Parse(File.ReadAllText(@"Static/TestFiles.json"));
+        //        model.ImageFile = (string)jsonFile["Image"];
+        //        model.TextFile = (string)jsonFile["Description"];
 
-                var result = itemController.Create(model, null, null);
+        //        var result = itemController.Create(model, null, null);
 
-                Assert.IsType<RedirectToActionResult>(result);
-                Assert.NotNull((from items in context.Items
-                                where items.Name == "TestItem 3"
-                                select items).FirstOrDefault());
+        //        Assert.IsType<RedirectToActionResult>(result);
+        //        Assert.NotNull((from items in context.Items
+        //                        where items.Name == "TestItem 3"
+        //                        select items).FirstOrDefault());
                 
-            }
-        }
+        //    }
+        //}
 
         [Theory]
         [ClassData(typeof(Setup))]

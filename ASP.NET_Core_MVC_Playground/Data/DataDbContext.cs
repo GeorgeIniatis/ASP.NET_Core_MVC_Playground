@@ -23,6 +23,7 @@ namespace ASP.NET_Core_MVC_Playground.Data
         public DbSet<Tiny> Tinies { get; set; }
         public DbSet<ShoppingBasket> ShoppingBaskets { get; set; }
         public DbSet<ShoppingBasketItem> ShoppingBasketItems { get; set; }
+        public DbSet<BoughtItem> BoughtItems { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -104,20 +105,20 @@ namespace ASP.NET_Core_MVC_Playground.Data
                     .HasComputedColumnSql("[FirstName]+ ' ' + [LastName]");
                 /*
                  * Scalar Function
-                 * --Declare the return variable here
-	               DECLARE @TotalOwned real
+                 *  -- Declare the return variable here
+	                DECLARE @TotalSpent real
 
-	               -- Add the T-SQL statements to compute the return value here
-	               SELECT @TotalOwned = SUM(Price)
-						                FROM dbo.Buyers as B, dbo.Items as I
-	                                    WHERE (B.Id = @BuyerId) AND (B.Id = I.BuyerId
+	                -- Add the T-SQL statements to compute the return value here
+	                SELECT @TotalSpent = SUM(Price)
+						                 FROM dbo.Buyers as B, dbo.BoughtItems as BI, dbo.Items as I
+	                                     WHERE (B.Id = @BuyerId) AND (B.Id = BI.BuyerId) AND (I.Id = BI.ItemId)
 
-	               -- Return the result of the function
-	               RETURN @TotalOwned
+	                -- Return the result of the function
+	                RETURN @TotalSpent
                  * 
                  * 
                  */
-                entity.Property(e => e.TotalOwed)
+                entity.Property(e => e.TotalSpent)
                     .HasComputedColumnSql("dbo.CalculateTotalOwned([Id])");
             });
 
@@ -132,6 +133,12 @@ namespace ASP.NET_Core_MVC_Playground.Data
             modelBuilder.Entity<ShoppingBasketItem>(entity =>
             {
                 entity.HasKey(e => new { e.ShoppingBasketId, e.ItemId });
+            });
+
+            // Bought Item Model
+            modelBuilder.Entity<BoughtItem>(entity =>
+            {
+                entity.HasKey(e => new { e.BuyerId, e.ItemId });
             });
 
             // Tiny Model
@@ -161,15 +168,23 @@ namespace ASP.NET_Core_MVC_Playground.Data
                 .OnDelete(DeleteBehavior.Cascade)
                 .IsRequired();
 
-            /* ONE Item can have ONE Buyer. That Buyer can buy MANY Items. 
-             * The Foreign Key to the Item table is the BuyerId
-             * If a Buyer is deleted the Item Buyer will be set to NULL
+            /* ONE Bought Item can have ONE Item. That Item can be in MANY Bought Items. 
+             * The Foreign Key to the BoughtItem table is the ItemId
              */
-            modelBuilder.Entity<Item>()
+            modelBuilder.Entity<BoughtItem>()
+                .HasOne<Item>(i => i.Item)
+                .WithMany(x => x.BoughtItems)
+                .HasForeignKey(y => y.ItemId)
+                .IsRequired();
+
+            /* ONE Bought Item can have ONE Buyer. That Buyer can be in MANY Bought Items. 
+             * The Foreign Key to the BoughtItem table is the BuyerId
+             */
+            modelBuilder.Entity<BoughtItem>()
                 .HasOne<Buyer>(i => i.Buyer)
-                .WithMany(ib => ib.ItemsBought)
-                .HasForeignKey(i => i.BuyerId)
-                .OnDelete(DeleteBehavior.SetNull);
+                .WithMany(x => x.BoughItems)
+                .HasForeignKey(y => y.BuyerId)
+                .IsRequired();
 
             /* ONE Shopping Basket has ONE Buyer
              * The Foreign Key to the Shopping Basket table is the BuyerId
@@ -190,7 +205,6 @@ namespace ASP.NET_Core_MVC_Playground.Data
                 .HasOne<Item>(i => i.Item)
                 .WithMany(x => x.ShoppingBasketItems)
                 .HasForeignKey(y => y.ItemId)
-                .OnDelete(DeleteBehavior.Cascade)
                 .IsRequired();
 
             /* ONE Shopping Basket Item has one Shopping Basket. That Shopping Basket can be in MANY Shopping Basket entries
@@ -201,7 +215,6 @@ namespace ASP.NET_Core_MVC_Playground.Data
                 .HasOne<ShoppingBasket>(i => i.ShoppingBasket)
                 .WithMany(x => x.ShoppingBasketItems)
                 .HasForeignKey(y => y.ShoppingBasketId)
-                .OnDelete(DeleteBehavior.Restrict)
                 .IsRequired();
 
         }

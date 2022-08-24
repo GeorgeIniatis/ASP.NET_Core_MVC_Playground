@@ -1,4 +1,5 @@
 ﻿using ASP.NET_Core_MVC_Playground.Data;
+using ASP.NET_Core_MVC_Playground.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections;
@@ -55,21 +56,19 @@ namespace ASP.NET_Core_MVC_Playground.Tests
             };
 
             // Add Items
-            List<Item> items = new List<Item>()
+            List<Item> items = new()
             {
                 new Item{
                     Name = "TestItem 1",
                     Price = 20,
                     Description = "Test Description 1",
                     SellerId = "OwnerID",
-                    BuyerId = "Borrower"
                 },
                 new Item{
                     Name = "TestItem 2",
                     Price = 220,
                     Description = "Test Description 2",
                     SellerId = "OwnerID2",
-                    BuyerId = "Borrower2"
                 }
             };
 

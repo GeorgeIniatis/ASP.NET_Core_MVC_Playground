@@ -48,13 +48,13 @@ namespace ASP.NET_Core_MVC_Playground.Controllers
 
         public async Task<IActionResult> Index(string searchString)
         {
-            List<Item> itemList = await _db.Items.Include(i => i.Seller).Include(i => i.Buyer).ToListAsync();
+            List<Item> itemList = await _db.Items.Include(i => i.Seller).ToListAsync();
             
             if(!String.IsNullOrEmpty(searchString))
             {
                 itemList = await (from items in _db.Items
                                   where items.Name.Contains(searchString)
-                                  select items).Include(i => i.Seller).Include(i => i.Buyer).ToListAsync();
+                                  select items).Include(i => i.Seller).ToListAsync();
             }
 
             List<ItemAddedToBasketViewModel> viewModelsList = new();
@@ -160,22 +160,7 @@ namespace ASP.NET_Core_MVC_Playground.Controllers
                     sellers.Add(new SelectListItem { Value = seller.Id.ToString(), Text = seller.FullName, Selected = selected });
 
                 }
-
-                List<SelectListItem> buyers = new();
-                buyers.Add(new SelectListItem { });
-
-                foreach (Buyer buyer in _db.Buyers)
-                {
-                    var selected = false;
-                    if (buyer == item.Buyer)
-                    {
-                        selected = true; 
-                    }
-                    buyers.Add(new SelectListItem { Value = buyer.Id.ToString(), Text = buyer.FullName, Selected = selected });
-                }
-
                 ViewBag.sellers = sellers;
-                ViewBag.buyers = buyers;
 
                 return View(model);
             }
@@ -220,11 +205,6 @@ namespace ASP.NET_Core_MVC_Playground.Controllers
                     string textFileBase64 = model.TextFile;
                     byte[] textBytes = Convert.FromBase64String(textFileBase64.Split(',')[1]);
                     model.Item.Description = Encoding.UTF8.GetString(textBytes);
-                }
-
-                if (model.Item.BuyerId != null)
-                {
-                    model.Item.DateBought = DateTime.Now;
                 }
 
                 try
