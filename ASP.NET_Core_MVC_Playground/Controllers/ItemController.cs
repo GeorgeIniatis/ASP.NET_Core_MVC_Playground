@@ -26,17 +26,14 @@ namespace ASP.NET_Core_MVC_Playground.Controllers
     {
         private readonly DataDbContext _db;
         private readonly ILogger _logger;
-        private readonly UserManager<ApplicationUser> _userManager;
         private readonly Helpers helpers;
         
         public ItemController(DataDbContext db, 
                               ILogger<ItemController> logger, 
-                              UserManager<ApplicationUser> userManager, 
                               Helpers Helpers)
         {
             _db = db;
             _logger = logger;
-            _userManager = userManager;
             helpers = Helpers;
         }
 
@@ -51,8 +48,8 @@ namespace ASP.NET_Core_MVC_Playground.Controllers
 
         public async Task<IActionResult> Index(string searchString)
         {
-            IEnumerable<Item> itemList = _db.Items.Include(i => i.Seller).Include(i => i.Buyer);
-
+            List<Item> itemList = await _db.Items.Include(i => i.Seller).Include(i => i.Buyer).ToListAsync();
+            
             if(!String.IsNullOrEmpty(searchString))
             {
                 itemList = await (from items in _db.Items
@@ -60,18 +57,24 @@ namespace ASP.NET_Core_MVC_Playground.Controllers
                                   select items).Include(i => i.Seller).Include(i => i.Buyer).ToListAsync();
             }
 
-            string userId = _userManager.GetUserId(User);
+            List<ItemAddedToBasketViewModel> viewModelsList = new();
 
-            //string userShoppingBasketId = await (from buyers in _db.Buyers.Include(i => i.ShoppingBasket)
-            //                                     where buyers.Id == userId
-            //                                     select buyers.ShoppingBasket.Id).FirstAsync();
+            string userShoppingBasketId = await helpers.getUserShoppingBasketId(User);
 
-            //List<int> itemsAlreadyAddedToBasket = await (from shoppingBasketItems in _db.ShoppingBasketItems
-            //                                             where shoppingBasketItems.ShoppingBasketId == userShoppingBasketId
-            //                                             select shoppingBasketItems.ItemId).ToListAsync();
+            foreach (Item item in itemList)
+            {
+                ItemAddedToBasketViewModel newViewModel = new()
+                {
+                    Item = item,
+                    AddedToBasket = await (from shoppingBasketItems in _db.ShoppingBasketItems
+                                           where shoppingBasketItems.ShoppingBasketId == userShoppingBasketId && shoppingBasketItems.ItemId == item.Id
+                                           select shoppingBasketItems).AnyAsync()
+                };
+                viewModelsList.Add(newViewModel);
+            }
 
             ViewBag.Status = TempData["Message"];
-            return View(itemList);
+            return View(viewModelsList);
         }
 
         public IActionResult Create()
@@ -231,7 +234,7 @@ namespace ASP.NET_Core_MVC_Playground.Controllers
                 catch (DbUpdateConcurrencyException ex)
                 {
                     _logger.LogInformation(ex, "Exception when trying to update item {ItemName}", model.Item.Name);
-                    if (helpers.getItemObject(model.Item.Id) == null)
+                    if (await helpers.getItemObject(model.Item.Id) == null)
                     {
                         return NotFound();
                     }
@@ -267,11 +270,34 @@ namespace ASP.NET_Core_MVC_Playground.Controllers
             return RedirectToAction("Index");
         }
 
-        public IActionResult AddToBasket(int Id)
+        public async Task<IActionResult> AddToBasket(int id)
         {
-            // Get current user
-            // Add the item to his/her basket
-            return NotFound();
+            Item item = await (from items in _db.Items
+                               where items.Id == id
+                               select items).FirstOrDefaultAsync();
+            
+            if(item == null)
+            {
+                return RedirectToAction("Index");
+            }
+
+            string userShoppingBasketId = await helpers.getUserShoppingBasketId(User);
+            ShoppingBasket shoppingBasket = await (from shoppingBaskets in _db.ShoppingBaskets
+                                             where shoppingBaskets.Id == userShoppingBasketId
+                                             select shoppingBaskets).FirstOrDefaultAsync();
+
+            ShoppingBasketItem newShoppingBasketItem = new()
+            {
+                Item = item,
+                ItemId = id,
+                ShoppingBasket = shoppingBasket,
+                ShoppingBasketId = userShoppingBasketId,
+            };
+
+            _db.ShoppingBasketItems.Add(newShoppingBasketItem);
+            await _db.SaveChangesAsync();
+
+            return RedirectToAction("Index");
         }
 
         // Helper Functions

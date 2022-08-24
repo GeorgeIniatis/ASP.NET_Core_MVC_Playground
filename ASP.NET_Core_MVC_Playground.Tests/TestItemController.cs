@@ -22,7 +22,7 @@ namespace ASP.NET_Core_MVC_Playground.Tests
         public ItemController getController(DataDbContext context)
         {
             var mockOptions = Options.Create(new StripeOptions());
-            var mockHelper = new Helpers(context, new Logger<Helpers>(new NullLoggerFactory()), mockOptions);
+            var mockHelper = new Helpers(context, new Logger<Helpers>(new NullLoggerFactory()), mockOptions, null);
 
             var mockLogger = new Logger<ItemController>(new NullLoggerFactory());
             var httpContext = new DefaultHttpContext();

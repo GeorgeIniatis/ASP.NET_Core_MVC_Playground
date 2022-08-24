@@ -1,4 +1,4 @@
-﻿@model IEnumerable<ASP.NET_Core_MVC_Playground.Data.Item>
+﻿@model IEnumerable<ASP.NET_Core_MVC_Playground.Models.ItemAddedToBasketViewModel>
 
 @{
     ViewData["Title"] = AppResources.ItemIndex.ItemIndexPage;
@@ -31,22 +31,22 @@
                             <thead>
                                 <tr>
                                     <th class="text-center">
-                                        @Html.DisplayNameFor(model => model.Name)
+                                        @Html.DisplayNameFor(model => model.Item.Name)
                                     </th>
                                     <th class="text-center">
-                                        @Html.DisplayNameFor(model => model.Description)
+                                        @Html.DisplayNameFor(model => model.Item.Description)
                                     </th>
                                     <th class="text-center">
-                                        @Html.DisplayNameFor(model => model.Price)
+                                        @Html.DisplayNameFor(model => model.Item.Price)
                                     </th>
                                     <th class="text-center">
-                                        @Html.DisplayNameFor(model => model.SellerId)
+                                        @Html.DisplayNameFor(model => model.Item.SellerId)
                                     </th>
                                     <th class="text-center">
-                                        @Html.DisplayNameFor(model => model.BuyerId)
+                                        @Html.DisplayNameFor(model => model.Item.BuyerId)
                                     </th>
                                     <th class="text-center">
-                                        @Html.DisplayNameFor(model => model.DateBought)
+                                        @Html.DisplayNameFor(model => model.Item.DateBought)
                                     </th>
                                     <th class="text-center">
                                         @AppResources.ItemIndex.Image
@@ -57,32 +57,32 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach (var item in Model)
+                                @foreach (var viewModel in Model)
                                 {
                                 <tr>
                                     <td class="text-center">
-                                        @Html.DisplayFor(modelItem => item.Name)
+                                        @Html.DisplayFor(modelItem => viewModel.Item.Name)
                                     </td>
                                     <td class="text-center">
-                                        @Html.DisplayFor(modelItem => item.Description)
+                                        @Html.DisplayFor(modelItem => viewModel.Item.Description)
                                     </td>
                                     <td class="text-center">
-                                        $@Html.DisplayFor(modelItem => item.Price)
+                                        $@Html.DisplayFor(modelItem => viewModel.Item.Price)
                                     </td>
                                     <td class="text-center">
-                                        @Html.DisplayFor(modelItem => item.Seller.FullName)
+                                        @Html.DisplayFor(modelItem => viewModel.Item.Seller.FullName)
                                     </td>
                                     <td class="text-center">
-                                        @Html.DisplayFor(modelItem => item.Buyer.FullName)
+                                        @Html.DisplayFor(modelItem => viewModel.Item.Buyer.FullName)
                                     </td>
                                     <td class="text-center">
-                                        @Html.DisplayFor(modelItem => item.DateBought)
+                                        @Html.DisplayFor(modelItem => viewModel.Item.DateBought)
                                     </td>
                                     <td class="text-center">
                                         <div>
-                                            @if (item.ImageBytes != null)
+                                            @if (viewModel.Item.ImageBytes != null)
                                             {
-                                                <img class="rounded" src="@Url.Action("getImg", "Item", new { itemId = item.Id} )" width="164" height="164" />
+                                                <img class="rounded" src="@Url.Action("getImg", "Item", new { itemId = viewModel.Item.Id} )" width="164" height="164" />
                                             }
                                             else
                                             {
@@ -92,21 +92,32 @@
                                     </td>
                                     <td>
                                         <div class="row mx-0">
-                                            <div class="col-md-12 mb-2 text-center">
-                                                <a asp-action="AddToBasket" asp-controller="Item" asp-route-Id="@item.Id" class="btn btn-warning btn-block">
-                                                    <i class="fa-solid fa-basket-shopping"></i> &nbsp; @AppResources.ItemIndex.AddToBasket
-                                                </a>
-                                            </div>
+                                            @if (viewModel.AddedToBasket == true)
+                                            {
+                                                <div class="col-md-12 mb-2 text-center">
+                                                    <a class="btn btn-warning btn-block disabled">
+                                                        <i class="fa-solid fa-basket-shopping"></i> &nbsp; @AppResources.ItemIndex.AlreadyAddedToBasket
+                                                    </a>
+                                                </div>
+                                            }
+                                            else
+                                            {
+                                                <div class="col-md-12 mb-2 text-center">
+                                                    <a asp-action="AddToBasket" asp-controller="Item" asp-route-Id="@viewModel.Item.Id" class="btn btn-warning btn-block">
+                                                        <i class="fa-solid fa-basket-shopping"></i> &nbsp; @AppResources.ItemIndex.AddToBasket
+                                                    </a>
+                                                </div>
+                                            }
 
                                             @if (Context.User.IsInRole("Admin"))
                                             {
                                                 <div class="col-md-12 mb-2 text-center">
-                                                    <a asp-action="Edit" asp-controller="Item" asp-route-Id="@item.Id" class="btn btn-primary btn-block">
+                                                    <a asp-action="Edit" asp-controller="Item" asp-route-Id="@viewModel.Item.Id" class="btn btn-primary btn-block">
                                                         <i class="fa-solid fa-pen-to-square"></i> &nbsp; @AppResources.ItemIndex.Edit
                                                     </a>
                                                 </div>
                                                 <div class="col-md-12 text-center">
-                                                    <a asp-action="Remove" asp-controller="Item" asp-route-Id="@item.Id" class="btn btn-danger btn-block">
+                                                    <a asp-action="Remove" asp-controller="Item" asp-route-Id="@viewModel.Item.Id" class="btn btn-danger btn-block">
                                                         <i class="fa-solid fa-trash-can"></i> &nbsp; @AppResources.ItemIndex.Remove
                                                     </a>
                                                 </div>

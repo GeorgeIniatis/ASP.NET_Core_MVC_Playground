@@ -1,6 +1,8 @@
+using ASP.NET_Core_MVC_Playground.Areas.Identity.Data;
 using ASP.NET_Core_MVC_Playground.Controllers;
 using ASP.NET_Core_MVC_Playground.Data;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -44,7 +46,8 @@ namespace ASP.NET_Core_MVC_Playground
                                             services.GetRequiredService<ILogger<SeedData>>(),
                                             new Helpers(services.GetRequiredService<DataDbContext>(),
                                                         services.GetRequiredService<ILogger<Helpers>>(),
-                                                        services.GetRequiredService<IOptions<StripeOptions>>()));
+                                                        services.GetRequiredService<IOptions<StripeOptions>>(),
+                                                        services.GetRequiredService<UserManager<ApplicationUser>>()));
                     seedData.Initialize(services);
                 }
                 catch (Exception ex)

@@ -219,6 +219,7 @@ namespace ASP.NET_Core_MVC_Playground
         private void CreateAdmin(IServiceProvider serviceProvider)
         {
             var userManager = serviceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+            var db = serviceProvider.GetRequiredService<DataDbContext>();
 
             var user = new ApplicationUser
             {
@@ -237,6 +238,24 @@ namespace ASP.NET_Core_MVC_Playground
 
                 Task<IdentityResult> adminRole = userManager.AddToRoleAsync(user, "Admin");
                 adminRole.Wait();
+
+                // Create New Buyer
+                Buyer newBuyer = new()
+                {
+                    Id = user.Id,
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                };
+                db.Buyers.Add(newBuyer);
+                db.SaveChangesAsync().Wait();
+
+                // Create Associated Shopping Basket
+                ShoppingBasket newShoppingBasket = new()
+                {
+                    BuyerId = newBuyer.Id
+                };
+                db.ShoppingBaskets.Add(newShoppingBasket);
+                db.SaveChangesAsync().Wait();
             }
         }
     }

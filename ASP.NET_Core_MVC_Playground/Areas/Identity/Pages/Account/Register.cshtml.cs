@@ -102,6 +102,7 @@ namespace ASP.NET_Core_MVC_Playground.Areas.Identity.Pages.Account
                     // Create New Buyer
                     Buyer newBuyer = new()
                     {
+                        Id = user.Id,
                         FirstName = user.FirstName,
                         LastName = user.LastName,
                     };

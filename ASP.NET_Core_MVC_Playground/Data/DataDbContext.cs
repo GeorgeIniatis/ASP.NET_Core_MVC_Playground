@@ -179,7 +179,8 @@ namespace ASP.NET_Core_MVC_Playground.Data
                 .HasOne<Buyer>(i => i.Buyer)
                 .WithOne(x => x.ShoppingBasket)
                 .HasForeignKey<ShoppingBasket>(y => y.BuyerId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.Cascade)
+                .IsRequired();
 
             /* ONE Shopping Basket Item has one Item. That Item can be in MANY Shopping Basket entries
              * The Foreigh Key to the Shopping Basket Item table is the ItemId
@@ -189,7 +190,8 @@ namespace ASP.NET_Core_MVC_Playground.Data
                 .HasOne<Item>(i => i.Item)
                 .WithMany(x => x.ShoppingBasketItems)
                 .HasForeignKey(y => y.ItemId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.Cascade)
+                .IsRequired();
 
             /* ONE Shopping Basket Item has one Shopping Basket. That Shopping Basket can be in MANY Shopping Basket entries
              * The Foreign Key to the Shopping Basket Item is the ShoppingBasketId
@@ -199,7 +201,8 @@ namespace ASP.NET_Core_MVC_Playground.Data
                 .HasOne<ShoppingBasket>(i => i.ShoppingBasket)
                 .WithMany(x => x.ShoppingBasketItems)
                 .HasForeignKey(y => y.ShoppingBasketId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.Restrict)
+                .IsRequired();
 
         }
     }

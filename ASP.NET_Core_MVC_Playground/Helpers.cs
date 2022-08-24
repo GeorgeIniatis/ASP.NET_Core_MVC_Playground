@@ -1,6 +1,8 @@
-﻿using ASP.NET_Core_MVC_Playground.Controllers;
+﻿using ASP.NET_Core_MVC_Playground.Areas.Identity.Data;
+using ASP.NET_Core_MVC_Playground.Controllers;
 using ASP.NET_Core_MVC_Playground.Data;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -13,6 +15,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace ASP.NET_Core_MVC_Playground
@@ -28,12 +31,17 @@ namespace ASP.NET_Core_MVC_Playground
         private readonly DataDbContext _db;
         private readonly ILogger _logger;
         private StripeOptions StripeOptions { get; }
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public Helpers(DataDbContext db, ILogger<Helpers> logger, IOptions<StripeOptions> optionsAccessorStripe)
+        public Helpers(DataDbContext db, 
+                       ILogger<Helpers> logger, 
+                       IOptions<StripeOptions> optionsAccessorStripe,
+                       UserManager<ApplicationUser> userManager)
         {
             _db = db;
             _logger = logger;
             StripeOptions = optionsAccessorStripe.Value;
+            _userManager = userManager;
         }
 
         public async Task<Item> getItemObject(int Id)
@@ -76,6 +84,16 @@ namespace ASP.NET_Core_MVC_Playground
             }
 
             return sellers;
+        }
+
+        public async Task<string> getUserShoppingBasketId(ClaimsPrincipal User)
+        {
+            string userId = _userManager.GetUserId(User);
+
+            string userShoppingBasketId = await (from buyers in _db.Buyers.Include(i => i.ShoppingBasket)
+                                                 where buyers.Id == userId
+                                                 select buyers.ShoppingBasket.Id).FirstAsync();
+            return userShoppingBasketId;
         }
 
         private byte[] processImage(IFormFile ImageFile)
