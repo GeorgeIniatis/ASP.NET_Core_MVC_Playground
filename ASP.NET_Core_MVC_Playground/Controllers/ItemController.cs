@@ -1,7 +1,9 @@
-﻿using ASP.NET_Core_MVC_Playground.Data;
+﻿using ASP.NET_Core_MVC_Playground.Areas.Identity.Data;
+using ASP.NET_Core_MVC_Playground.Data;
 using ASP.NET_Core_MVC_Playground.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -14,6 +16,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -23,12 +26,17 @@ namespace ASP.NET_Core_MVC_Playground.Controllers
     {
         private readonly DataDbContext _db;
         private readonly ILogger _logger;
+        private readonly UserManager<ApplicationUser> _userManager;
         private readonly Helpers helpers;
-
-        public ItemController(DataDbContext db, ILogger<ItemController> logger, Helpers Helpers)
+        
+        public ItemController(DataDbContext db, 
+                              ILogger<ItemController> logger, 
+                              UserManager<ApplicationUser> userManager, 
+                              Helpers Helpers)
         {
             _db = db;
             _logger = logger;
+            _userManager = userManager;
             helpers = Helpers;
         }
 
@@ -51,6 +59,16 @@ namespace ASP.NET_Core_MVC_Playground.Controllers
                                   where items.Name.Contains(searchString)
                                   select items).Include(i => i.Seller).Include(i => i.Buyer).ToListAsync();
             }
+
+            string userId = _userManager.GetUserId(User);
+
+            //string userShoppingBasketId = await (from buyers in _db.Buyers.Include(i => i.ShoppingBasket)
+            //                                     where buyers.Id == userId
+            //                                     select buyers.ShoppingBasket.Id).FirstAsync();
+
+            //List<int> itemsAlreadyAddedToBasket = await (from shoppingBasketItems in _db.ShoppingBasketItems
+            //                                             where shoppingBasketItems.ShoppingBasketId == userShoppingBasketId
+            //                                             select shoppingBasketItems.ItemId).ToListAsync();
 
             ViewBag.Status = TempData["Message"];
             return View(itemList);
@@ -247,6 +265,13 @@ namespace ASP.NET_Core_MVC_Playground.Controllers
                 TempData["Message"] = "Item could not be removed!";
             }
             return RedirectToAction("Index");
+        }
+
+        public IActionResult AddToBasket(int Id)
+        {
+            // Get current user
+            // Add the item to his/her basket
+            return NotFound();
         }
 
         // Helper Functions

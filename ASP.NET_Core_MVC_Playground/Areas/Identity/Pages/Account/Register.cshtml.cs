@@ -6,6 +6,7 @@ using System.Text;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using ASP.NET_Core_MVC_Playground.Areas.Identity.Data;
+using ASP.NET_Core_MVC_Playground.Data;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -24,17 +25,20 @@ namespace ASP.NET_Core_MVC_Playground.Areas.Identity.Pages.Account
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
+        private readonly DataDbContext _db;
 
         public RegisterModel(
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
             ILogger<RegisterModel> logger,
-            IEmailSender emailSender)
+            IEmailSender emailSender,
+            DataDbContext db)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _logger = logger;
             _emailSender = emailSender;
+            _db = db;
         }
 
         [BindProperty]
@@ -94,6 +98,23 @@ namespace ASP.NET_Core_MVC_Playground.Areas.Identity.Pages.Account
                     _logger.LogInformation("User created a new account with password.");
                     
                     await _userManager.AddToRoleAsync(user, "User");
+
+                    // Create New Buyer
+                    Buyer newBuyer = new()
+                    {
+                        FirstName = user.FirstName,
+                        LastName = user.LastName,
+                    };
+                    _db.Buyers.Add(newBuyer);
+                    await _db.SaveChangesAsync();
+
+                    // Create Associated Shopping Basket
+                    ShoppingBasket newShoppingBasket = new()
+                    {
+                        BuyerId = newBuyer.Id
+                    };
+                    _db.ShoppingBaskets.Add(newShoppingBasket);
+                    await _db.SaveChangesAsync();
 
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                     code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));

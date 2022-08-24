@@ -51,12 +51,9 @@
                                     <th class="text-center">
                                         @AppResources.ItemIndex.Image
                                     </th>
-                                    @if (Context.User.IsInRole("Admin"))
-                                    {
-                                        <th class="text-center">
-                                            @AppResources.ItemIndex.Actions
-                                        </th>
-                                    }
+                                    <th class="text-center">
+                                        @AppResources.ItemIndex.Actions
+                                    </th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -93,10 +90,16 @@
                                             }
                                         </div>
                                     </td>
-                                    @if (Context.User.IsInRole("Admin"))
-                                    {
-                                        <td>
-                                            <div class="row mx-0">
+                                    <td>
+                                        <div class="row mx-0">
+                                            <div class="col-md-12 mb-2 text-center">
+                                                <a asp-action="AddToBasket" asp-controller="Item" asp-route-Id="@item.Id" class="btn btn-warning btn-block">
+                                                    <i class="fa-solid fa-basket-shopping"></i> &nbsp; @AppResources.ItemIndex.AddToBasket
+                                                </a>
+                                            </div>
+
+                                            @if (Context.User.IsInRole("Admin"))
+                                            {
                                                 <div class="col-md-12 mb-2 text-center">
                                                     <a asp-action="Edit" asp-controller="Item" asp-route-Id="@item.Id" class="btn btn-primary btn-block">
                                                         <i class="fa-solid fa-pen-to-square"></i> &nbsp; @AppResources.ItemIndex.Edit
@@ -107,9 +110,9 @@
                                                         <i class="fa-solid fa-trash-can"></i> &nbsp; @AppResources.ItemIndex.Remove
                                                     </a>
                                                 </div>
-                                            </div>
-                                        </td>
-                                    }
+                                            }
+                                        </div>
+                                    </td>
                                 </tr>
                                 }
                             </tbody>
