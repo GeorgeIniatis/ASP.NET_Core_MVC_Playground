@@ -59,6 +59,10 @@ input the following information following the exact format
   "DbResourceConfiguration": {
     "ConnectionString": "ConnectionString",
     "GoogleApiKey": "GoogleApiKey",
+  },
+  "Stripe": {
+    "PublishableKey": "PublishableKey",
+    "SecretKey": "SecretKey"
   }
 }
 ```
