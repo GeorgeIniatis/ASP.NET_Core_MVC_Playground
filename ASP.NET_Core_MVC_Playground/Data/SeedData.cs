@@ -69,7 +69,8 @@ namespace ASP.NET_Core_MVC_Playground.Data
                 return;
             }
 
-            _db.Items.AddRange(
+            List<Item> itemsList = new()
+            {
                 new Item
                 {
                     Name = "Xbox",
@@ -110,14 +111,15 @@ namespace ASP.NET_Core_MVC_Playground.Data
                     Description = "Improved battlestar but lacking in leadership",
                     StripeImageUrl = "https://static.wikia.nocookie.net/galactica/images/3/30/BattlestarPegasusPegasus.png/revision/latest?cb=20220308163308"
                 }
-            );
+            };
 
-            // Save to Db
-            _db.SaveChanges();
             // Create Stripe Products
-            foreach(Item item in _db.Items)
+            foreach(Item item in itemsList)
             {
-                helpers.createStripeProduct(item);
+                string[] newProductCreated = helpers.createStripeProduct(item);
+                item.StripeId = newProductCreated[0];
+                item.StripePriceId = newProductCreated[1];
+                helpers.saveItem(item);
             }
             _logger.LogInformation("Items seeded!");
         }

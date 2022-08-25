@@ -9,6 +9,10 @@ namespace ASP.NET_Core_MVC_Playground.Data
     {
         public int Id { get; set; }
 
+        public string StripeId { get; set; }
+
+        public string StripePriceId { get; set; }
+
         [Required(ErrorMessageResourceName = "NameIsRequired", ErrorMessageResourceType = typeof(AppResources.ItemModel))]
         [Display(Name = "Name", ResourceType = typeof(AppResources.ItemModel))]
         public string Name { get; set; }

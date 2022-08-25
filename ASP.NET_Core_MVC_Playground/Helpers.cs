@@ -129,7 +129,7 @@ namespace ASP.NET_Core_MVC_Playground
             return null;
         }
 
-        public void createStripeProduct(Item item)
+        public string[] createStripeProduct(Item item)
         {
             StripeConfiguration.ApiKey = StripeOptions.SecretKey;
 
@@ -145,7 +145,78 @@ namespace ASP.NET_Core_MVC_Playground
                 Images = new List<String>() { item.StripeImageUrl },
             };
             var service = new ProductService();
-            service.Create(options);
+            Product productCreated = service.Create(options);
+            return new string[] { productCreated.Id, productCreated.DefaultPriceId };
+        }
+
+        public void editStripeProduct(Item item)
+        {
+            bool priceChanged = (from items in _db.Items
+                                 where items.Id == item.Id
+                                 select items.Price).First() != item.Price;
+
+            string oldPriceToArchive = null;
+            if(priceChanged)
+            {
+                oldPriceToArchive = item.StripePriceId;
+                item.StripePriceId = createStripePrice(item);
+            }
+
+            StripeConfiguration.ApiKey = StripeOptions.SecretKey;
+
+            var options = new ProductUpdateOptions 
+            { 
+                Name = item.Name,
+                Description = item.Description,
+                DefaultPrice = item.StripePriceId,
+                Images = new List<String>() { item.StripeImageUrl },
+            };
+            var service = new ProductService();
+            service.Update(item.StripeId, options);
+
+            if(oldPriceToArchive != null)
+            {
+                archiveOldPrice(oldPriceToArchive);
+            }
+        }
+
+        public string createStripePrice(Item item)
+        {
+            StripeConfiguration.ApiKey = StripeOptions.SecretKey;
+
+            var createOptions = new PriceCreateOptions
+            {
+                UnitAmount = item.Price * 100,
+                Currency = "eur",
+                Product = item.StripeId
+            };
+            var createService = new PriceService();
+            return createService.Create(createOptions).Id; 
+        }
+
+        public void archiveOldPrice(string oldPriceToArchive)
+        {
+            StripeConfiguration.ApiKey = StripeOptions.SecretKey;
+
+            var updateOptions = new PriceUpdateOptions
+            {
+                Active = false
+            };
+            var updateService = new PriceService();
+            updateService.Update(oldPriceToArchive, updateOptions);
+        }
+
+        public void archiveStripeProduct(Item item)
+        {
+            StripeConfiguration.ApiKey = StripeOptions.SecretKey;
+
+            // Update Stripe Product Price Object to NULL
+            var options = new ProductUpdateOptions
+            {
+                Active = false,
+            };
+            var updateService = new ProductService();
+            updateService.Update(item.StripeId, options);
         }
     }
 }

@@ -123,9 +123,10 @@ namespace ASP.NET_Core_MVC_Playground.Controllers
                     _logger.LogError(errorMessage);
                     return View();
                 }
-                
+                string[] newProductCreated = helpers.createStripeProduct(model.Item);
+                model.Item.StripeId = newProductCreated[0];
+                model.Item.StripePriceId = newProductCreated[1];
                 helpers.saveItem(model.Item);
-                helpers.createStripeProduct(model.Item);
 
                 TempData["Message"] = "Item created successfully!";
                 _logger.LogInformation("Item Created with Name:{ItemName}",model.Item.Name);
@@ -209,6 +210,7 @@ namespace ASP.NET_Core_MVC_Playground.Controllers
 
                 try
                 {
+                    helpers.editStripeProduct(model.Item);
                     await helpers.updateItem(model.Item);
                 }
                 catch (DbUpdateConcurrencyException ex)
@@ -240,6 +242,7 @@ namespace ASP.NET_Core_MVC_Playground.Controllers
 
             if (item != null)
             {
+                helpers.archiveStripeProduct(item);
                 helpers.removeItem(item);
                 TempData["Message"] = "Item removed successfully!";
             }
