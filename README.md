@@ -80,8 +80,9 @@ update-database -context DataDbContext
 add-migration initialCreate -context IdentityDbContext - o "Areas/Identity/Data/Migrations"
 update-database -context IdentityDbContext
 ```
+4. Run XUnit Tests
 
-4. Access Site
+5. Access Site
 
 **You can register a normal user and sign in but you will only have access to a limited number of pages or**
 
@@ -92,7 +93,11 @@ Username: admin@site.com
 Password: adminTestpa%$ssword3648
 ```
 
-5. Run XUnit Tests
+6. Buy Something
+
+**Using an account go to the Items page and add stuff to the basket. Then go to the Checkout page and enter one of the test cards**
+
+**https://stripe.com/docs/checkout/quickstart#testing**
 
 6. Disclaimers
 
