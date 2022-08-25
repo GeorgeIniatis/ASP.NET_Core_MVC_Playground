@@ -95,7 +95,7 @@ Password: adminTestpa%$ssword3648
 
 6. Buy Something
 
-**Using an account go to the Items page and add stuff to the basket. Then go to the Checkout page and enter one of the testing 'credit cards' which you can find [here](https://stripe.com/docs/checkout/quickstart#testing)**
+**Using an account go to the Items page and add stuff to the basket. Then go to the Checkout page and enter one of the testing 'credit cards' which you can find [here](https://stripe.com/docs/checkout/quickstart#testing).**
 
 7. Disclaimers
 
