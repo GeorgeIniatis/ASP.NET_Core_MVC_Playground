@@ -46,6 +46,8 @@ namespace ASP.NET_Core_MVC_Playground.Controllers
         //    _logger = factory.CreateLogger("DemoCategory");
         //}
 
+
+        // Public Accessible Actions
         public async Task<IActionResult> Index(string searchString)
         {
             List<Item> itemList = await _db.Items.Include(i => i.Seller).ToListAsync();
@@ -77,6 +79,76 @@ namespace ASP.NET_Core_MVC_Playground.Controllers
             return View(viewModelsList);
         }
 
+        public async Task<IActionResult> Checkout()
+        {
+            string userShoppingBasketId = await helpers.getUserShoppingBasketId(User);
+
+            List<Item> itemsInShoppingBasket = await (from shoppingBasketItems in _db.ShoppingBasketItems.Include(i => i.Item)
+                                                        where shoppingBasketItems.ShoppingBasketId == userShoppingBasketId
+                                                        select shoppingBasketItems.Item).ToListAsync();
+
+            return View(itemsInShoppingBasket);
+        }
+
+        public async Task<IActionResult> AddToBasket(int id)
+        {
+            Item item = await (from items in _db.Items
+                               where items.Id == id
+                               select items).FirstOrDefaultAsync();
+
+            if (item == null)
+            {
+                return RedirectToAction("Index");
+            }
+
+            string userShoppingBasketId = await helpers.getUserShoppingBasketId(User);
+            ShoppingBasket shoppingBasket = await (from shoppingBaskets in _db.ShoppingBaskets
+                                                   where shoppingBaskets.Id == userShoppingBasketId
+                                                   select shoppingBaskets).FirstOrDefaultAsync();
+
+            ShoppingBasketItem newShoppingBasketItem = new()
+            {
+                Item = item,
+                ItemId = id,
+                ShoppingBasket = shoppingBasket,
+                ShoppingBasketId = userShoppingBasketId,
+            };
+
+            _db.ShoppingBasketItems.Add(newShoppingBasketItem);
+            await _db.SaveChangesAsync();
+
+            return RedirectToAction("Index");
+        }
+
+        public async Task<IActionResult> RemoveFromBasket(int id)
+        {
+            string userShoppingBasketId = await helpers.getUserShoppingBasketId(User);
+            ShoppingBasketItem itemInBasket = await (from shoppingBasketItems in _db.ShoppingBasketItems
+                                                     where shoppingBasketItems.ShoppingBasketId == userShoppingBasketId && shoppingBasketItems.ItemId == id
+                                                     select shoppingBasketItems).FirstOrDefaultAsync();
+
+            if (itemInBasket != null)
+            {
+                _db.ShoppingBasketItems.Remove(itemInBasket);
+                await _db.SaveChangesAsync();
+            }
+
+            return RedirectToAction("Checkout");
+        }
+
+        public IActionResult Success()
+        {
+            return View();
+        }
+
+        public IActionResult Cancel()
+        {
+            return View();
+        }
+
+
+        // Admin Accessible Actions
+        [Authorize(Roles = "Admin")]
         public IActionResult Create()
         {
             List<SelectListItem> sellers = helpers.getSellersAsSelectListItems();
@@ -87,6 +159,7 @@ namespace ASP.NET_Core_MVC_Playground.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public IActionResult Create(ItemImageViewModel model, IFormFile ImageFile, IFormFile TextFile)
         {
             if(ModelState.IsValid)
@@ -140,6 +213,7 @@ namespace ASP.NET_Core_MVC_Playground.Controllers
             }
         }
 
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int Id)
         {
             ItemImageViewModel model = new();
@@ -173,6 +247,7 @@ namespace ASP.NET_Core_MVC_Playground.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         //[Bind("Id,Name,Price,SellerId,BuyerId")]
         public async Task<IActionResult> Edit(int Id,  ItemImageViewModel model, IFormFile ImageFile, IFormFile TextFile)
         {
@@ -250,36 +325,6 @@ namespace ASP.NET_Core_MVC_Playground.Controllers
             {
                 TempData["Message"] = "Item could not be removed!";
             }
-            return RedirectToAction("Index");
-        }
-
-        public async Task<IActionResult> AddToBasket(int id)
-        {
-            Item item = await (from items in _db.Items
-                               where items.Id == id
-                               select items).FirstOrDefaultAsync();
-            
-            if(item == null)
-            {
-                return RedirectToAction("Index");
-            }
-
-            string userShoppingBasketId = await helpers.getUserShoppingBasketId(User);
-            ShoppingBasket shoppingBasket = await (from shoppingBaskets in _db.ShoppingBaskets
-                                             where shoppingBaskets.Id == userShoppingBasketId
-                                             select shoppingBaskets).FirstOrDefaultAsync();
-
-            ShoppingBasketItem newShoppingBasketItem = new()
-            {
-                Item = item,
-                ItemId = id,
-                ShoppingBasket = shoppingBasket,
-                ShoppingBasketId = userShoppingBasketId,
-            };
-
-            _db.ShoppingBasketItems.Add(newShoppingBasketItem);
-            await _db.SaveChangesAsync();
-
             return RedirectToAction("Index");
         }
 

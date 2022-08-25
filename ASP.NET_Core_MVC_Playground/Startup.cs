@@ -24,6 +24,7 @@ using Microsoft.AspNetCore.Localization;
 using ASP.NET_Core_MVC_Playground.Areas.Identity.Data;
 using Microsoft.Extensions.Logging;
 using ASP.NET_Core_MVC_Playground.Controllers;
+using Stripe;
 
 namespace ASP.NET_Core_MVC_Playground
 {
@@ -155,7 +156,9 @@ namespace ASP.NET_Core_MVC_Playground
                               IServiceProvider serviceProvider, 
                               RequestLocalizationOptions options)
         {
-            
+
+            StripeConfiguration.ApiKey = Configuration["Stripe:SecretKey"]; ;
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
