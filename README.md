@@ -99,7 +99,7 @@ Password: adminTestpa%$ssword3648
 
 **https://stripe.com/docs/checkout/quickstart#testing**
 
-6. Disclaimers
+7. Disclaimers
 
 **Only the Items Page has been setup fully for Localisation and Globalization, but without the database table changing the locale will have almost no effect except showing the variable names used**
 
