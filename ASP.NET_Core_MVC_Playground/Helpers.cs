@@ -24,6 +24,7 @@ namespace ASP.NET_Core_MVC_Playground
     {
         public string? PublishableKey { get; set; }
         public string? SecretKey { get; set; }
+        public string? EndpointSecretKey { get; set; }
     }
 
     public class Helpers
@@ -94,6 +95,15 @@ namespace ASP.NET_Core_MVC_Playground
                                                  where buyers.Id == userId
                                                  select buyers.ShoppingBasket.Id).FirstAsync();
             return userShoppingBasketId;
+        }
+
+        public async Task<Buyer> getBuyerFromUser(ClaimsPrincipal User)
+        {
+            string userId = _userManager.GetUserId(User);
+            Buyer buyer = await (from buyers in _db.Buyers
+                                 where buyers.Id == userId
+                                 select buyers).FirstOrDefaultAsync();
+            return buyer;
         }
 
         private byte[] processImage(IFormFile ImageFile)
@@ -217,6 +227,11 @@ namespace ASP.NET_Core_MVC_Playground
             };
             var updateService = new ProductService();
             updateService.Update(item.StripeId, options);
+        }
+
+        public string returnStripeEndpointKey()
+        {
+            return StripeOptions.EndpointSecretKey;
         }
     }
 }

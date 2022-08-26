@@ -136,8 +136,29 @@ namespace ASP.NET_Core_MVC_Playground.Controllers
             return RedirectToAction("Checkout");
         }
 
-        public IActionResult Success()
+        public async Task<IActionResult> Success()
         {
+            string userShoppingBasketId = await helpers.getUserShoppingBasketId(User);
+            Buyer buyer = await helpers.getBuyerFromUser(User);
+
+            List<ShoppingBasketItem> shoppingBasketItemsList = await(from shoppingBasketItems in _db.ShoppingBasketItems.Include(i => i.Item)
+                                                                     where shoppingBasketItems.ShoppingBasketId == userShoppingBasketId
+                                                                     select shoppingBasketItems).ToListAsync();
+
+            foreach (ShoppingBasketItem shoppingBaskeItem in shoppingBasketItemsList)
+            {
+                BoughtItem newBoughtItem = new()
+                {
+                    Buyer = buyer,
+                    BuyerId = buyer.Id,
+                    Item = shoppingBaskeItem.Item,
+                    ItemId = shoppingBaskeItem.Item.Id
+                };
+                _db.BoughtItems.Add(newBoughtItem);
+                _db.ShoppingBasketItems.Remove(shoppingBaskeItem);
+            }
+            await _db.SaveChangesAsync();
+
             return View();
         }
 

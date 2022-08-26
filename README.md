@@ -62,7 +62,8 @@ input the following information following the exact format
   },
   "Stripe": {
     "PublishableKey": "PublishableKey",
-    "SecretKey": "SecretKey"
+    "SecretKey": "SecretKey",
+    "EndpointSecretKey": "EndpointSecretKey"
   }
 }
 ```
@@ -97,7 +98,16 @@ Password: adminTestpa%$ssword3648
 
 **Using an account go to the Items page and add stuff to the basket. Then go to the Checkout page and enter one of the testing 'credit cards' which you can find [here](https://stripe.com/docs/checkout/quickstart#testing).**
 
-7. Disclaimers
+7. Test Stripe Webhook Integration
+
+**Download Stripe CLI and run the following commands**
+
+```
+stripe login
+stripe listen --forward-to https://localhost:44395/webhook
+```
+
+8. Disclaimers
 
 **Only the Items Page has been setup fully for Localisation and Globalization, but without the database table changing the locale will have almost no effect except showing the variable names used**
 
