@@ -85,9 +85,9 @@ update-database -context IdentityDbContext
 
 5. Access Site
 
-**You can register a normal user and sign in but you will only have access to a limited number of pages or**
+* **You can register a normal user and sign in but you will only have access to a limited number of pages or**
 
-**Login with admin user automatically created to access all the available pages**
+* **Login with admin user automatically created to access all the available pages**
 
 ```
 Username: admin@site.com
@@ -96,11 +96,11 @@ Password: adminTestpa%$ssword3648
 
 6. Buy Something
 
-**Using an account go to the Items page and add stuff to the basket. Then go to the Checkout page and enter one of the testing 'credit cards' which you can find [here](https://stripe.com/docs/checkout/quickstart#testing).**
+* **Using an account go to the Items page and add stuff to the basket. Then go to the Checkout page and enter one of the testing 'credit cards' which you can find [here](https://stripe.com/docs/checkout/quickstart#testing).**
 
 7. Test Stripe Webhook Integration
 
-**Download Stripe CLI and run the following commands**
+* **Download Stripe CLI and run the following commands**
 
 ```
 stripe login
@@ -109,8 +109,8 @@ stripe listen --forward-to https://localhost:44395/webhook
 
 8. Disclaimers
 
-**Only the Items Page has been setup fully for Localisation and Globalization, but without the database table changing the locale will have almost no effect except showing the variable names used**
+* **Only the Items Page has been setup fully for Localisation and Globalization, but without the database table changing the locale will have almost no effect except showing the variable names used**
 
-**The SMS service will only work with number you have chosen during the set up of Sendgrid.**
+* **The SMS service will only work with number you have chosen during the set up of Sendgrid.**
 
-**The Email service may or may not work. What I would suggest is using a temp email.**
+* **The Email service may or may not work. What I would suggest is using a temp email.**
