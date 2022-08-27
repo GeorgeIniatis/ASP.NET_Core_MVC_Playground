@@ -7,7 +7,7 @@ This is just a playground site where multiple ASP.NET Core, Javascript and Boots
 **Assuming you are using Visual Studio 2019 or Visual Studio 2022**
 
 1. Inside `secrets.json` which can be accessed by right-clicking on your project and clicking `Manage User Secrets`
-input the following information following the exact format
+input the following information following the exact format and replacing the dictionary values with your own API Keys. You do not have to enter every single one but the ConnectionStrings are a must.
 
 ```
 // File Format
