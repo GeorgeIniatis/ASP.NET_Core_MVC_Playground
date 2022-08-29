@@ -27,21 +27,29 @@ namespace ASP.NET_Core_MVC_Playground
         public string? EndpointSecretKey { get; set; }
     }
 
+    public class AppOptions
+    {
+        public string? Url { get; set; }
+    }
+
     public class Helpers
     {
         private readonly DataDbContext _db;
         private readonly ILogger _logger;
         private StripeOptions StripeOptions { get; }
+        private AppOptions AppOptions { get; }
         private readonly UserManager<ApplicationUser> _userManager;
 
         public Helpers(DataDbContext db, 
                        ILogger<Helpers> logger, 
                        IOptions<StripeOptions> optionsAccessorStripe,
+                       IOptions<AppOptions> optionsAccessorApp,
                        UserManager<ApplicationUser> userManager)
         {
             _db = db;
             _logger = logger;
             StripeOptions = optionsAccessorStripe.Value;
+            AppOptions = optionsAccessorApp.Value;
             _userManager = userManager;
         }
 
@@ -232,6 +240,11 @@ namespace ASP.NET_Core_MVC_Playground
         public string returnStripeEndpointKey()
         {
             return StripeOptions.EndpointSecretKey;
+        }
+
+        public string returnUrl()
+        {
+            return AppOptions.Url;
         }
     }
 }

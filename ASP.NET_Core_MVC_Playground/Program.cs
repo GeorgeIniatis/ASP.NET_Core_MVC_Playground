@@ -47,6 +47,7 @@ namespace ASP.NET_Core_MVC_Playground
                                             new Helpers(services.GetRequiredService<DataDbContext>(),
                                                         services.GetRequiredService<ILogger<Helpers>>(),
                                                         services.GetRequiredService<IOptions<StripeOptions>>(),
+                                                        services.GetRequiredService<IOptions<AppOptions>>(),
                                                         services.GetRequiredService<UserManager<ApplicationUser>>()));
                     seedData.Initialize(services);
                 }

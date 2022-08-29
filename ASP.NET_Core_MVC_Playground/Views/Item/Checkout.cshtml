@@ -11,33 +11,41 @@
                 <h1>Shopping Basket</h1>
                 <small>
                     <b>
-                        Make sure you use one of the "credit cards" used for testing purposes which you can find 
+                        Make sure you use one of the "credit cards" used for testing purposes which you can find
                         <a href="https://stripe.com/docs/checkout/quickstart#testing">here</a>
                     </b>
                 </small>
                 <hr>
-                @foreach (var item in Model)
+                @if (Model.Count() != 0)
                 {
-                    <div class="row justify-content-center">
-                        <div class="col-md-2 my-1">
-                            <img class="img-fluid d-block" src="@item.StripeImageUrl" height="80" width="80">
-                        </div>
-                        <div class="col-md-4">
-                            <h4 class="">@item.Name</h4>
-                            <h5 class="">€@item.Price</h5>
-                        </div>
-                        <div class="col-md-2 my-3 pl-0">
-                            <a asp-action="RemoveFromBasket" asp-controller="Item" asp-route-Id="@item.Id" class="btn btn-danger btn-block">
-                                <i class="fa-solid fa-trash-can"></i>
-                            </a>
-                        </div>
+                    @foreach (var item in Model)
+                    {
+                        <div class="row justify-content-center">
+                            <div class="col-md-2 my-1">
+                                <img class="img-fluid d-block" src="@item.StripeImageUrl" height="80" width="80">
+                            </div>
+                            <div class="col-md-4">
+                                <h4 class="">@item.Name</h4>
+                                <h5 class="">€@item.Price</h5>
+                            </div>
+                            <div class="col-md-2 my-3 pl-0">
+                                <a asp-action="RemoveFromBasket" asp-controller="Item" asp-route-Id="@item.Id" class="btn btn-danger btn-block">
+                                    <i class="fa-solid fa-trash-can"></i>
+                                </a>
+                            </div>
 
 
-                    </div>
+                        </div>
+                    }
+                    <form action="/create-checkout-session" method="POST">
+                        <button type="submit" class="btn btn-primary">Checkout</button>
+                    </form>
                 }
-                <form action="/create-checkout-session" method="POST">
-                    <button type="submit" class="btn btn-primary">Checkout</button>
-                </form>
+                else
+                {
+                    <h2> Your Shopping Basket Is Empty! </h2>
+                }
+
             </div>
         </div>
     </div>

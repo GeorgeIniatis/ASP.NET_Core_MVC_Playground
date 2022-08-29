@@ -118,6 +118,7 @@ namespace ASP.NET_Core_MVC_Playground
             services.AddTransient<ISmsSender, AuthMessageSender>();
             services.AddTransient<IViewLocalizer, DbResViewLocalizer>();
             services.Configure<StripeOptions>(Configuration.GetSection("Stripe"));
+            services.Configure<AppOptions>(Configuration.GetSection("AppSettings"));
             services.Configure<AuthMessageSenderOptionsSendgrid>(Configuration.GetSection("EmailService:Sendgrid"));
             services.Configure<AuthMessageSenderOptionsTwilio>(Configuration.GetSection("SmsService:Twilio"));
 

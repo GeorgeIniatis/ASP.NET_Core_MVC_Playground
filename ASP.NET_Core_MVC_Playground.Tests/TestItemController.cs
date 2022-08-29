@@ -21,8 +21,9 @@ namespace ASP.NET_Core_MVC_Playground.Tests
 
         public ItemController getController(DataDbContext context)
         {
-            var mockOptions = Options.Create(new StripeOptions());
-            var mockHelper = new Helpers(context, new Logger<Helpers>(new NullLoggerFactory()), mockOptions, null);
+            var mockOptionsStripe = Options.Create(new StripeOptions());
+            var mockOptionsApp = Options.Create(new AppOptions());
+            var mockHelper = new Helpers(context, new Logger<Helpers>(new NullLoggerFactory()), mockOptionsStripe, mockOptionsApp, null);
 
             var mockLogger = new Logger<ItemController>(new NullLoggerFactory());
             var httpContext = new DefaultHttpContext();

@@ -47,7 +47,7 @@ namespace ASP.NET_Core_MVC_Playground.Controllers
                 });
             }
 
-            var domain = "https://localhost:44395/";
+            var domain = helpers.returnUrl();
             var options = new SessionCreateOptions
             {
                 LineItems = sessionLineItemOptionsList,
