@@ -53,11 +53,6 @@ namespace ASP.NET_Core_MVC_Playground
             _userManager = userManager;
         }
 
-        public async Task createNewBuyer(ApplicationUser User)
-        {
-
-        }
-
         public async Task<Item> getItemObject(int Id)
         {
             Item item = await (from items in _db.Items
