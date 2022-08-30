@@ -92,15 +92,12 @@ namespace ASP.NET_Core_MVC_Playground.Areas.Identity.Pages.Account.Manage
                 if (Input.PhoneNumber != phoneNumber)
                 {
                     var setPhoneResult = await _userManager.SetPhoneNumberAsync(user, Input.PhoneNumber);
+                    await _smsSender.SendSmsAsync(Input.PhoneNumber, "Phone number added successfully!");
                     if (!setPhoneResult.Succeeded)
                     {
                         StatusMessage = "Unexpected error when trying to set phone number.";
                         return RedirectToPage();
                     }
-                }
-                else
-                {
-                    await _smsSender.SendSmsAsync(phoneNumber, "Phone number added successfully!");
                 }
             }
 

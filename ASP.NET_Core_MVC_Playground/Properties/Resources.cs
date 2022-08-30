@@ -849,6 +849,14 @@ namespace AppResources
 			}
 		}
 
+		public static System.String StripeImageUrlIsRequired
+		{
+			get
+			{
+				return GeneratedResourceHelper.GetResourceString("ItemModel","StripeImageUrlIsRequired",ResourceManager,GeneratedResourceSettings.ResourceAccessMode);
+			}
+		}
+
 		public static System.String ValidSeller
 		{
 			get

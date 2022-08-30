@@ -63,12 +63,14 @@ namespace ASP.NET_Core_MVC_Playground.Tests
                     Price = 20,
                     Description = "Test Description 1",
                     SellerId = "OwnerID",
+                    StripeImageUrl = " "
                 },
                 new Item{
                     Name = "TestItem 2",
                     Price = 220,
                     Description = "Test Description 2",
                     SellerId = "OwnerID2",
+                    StripeImageUrl = " "
                 }
             };
 
