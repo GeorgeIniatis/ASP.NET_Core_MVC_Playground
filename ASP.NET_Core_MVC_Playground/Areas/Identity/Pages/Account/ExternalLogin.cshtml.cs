@@ -7,6 +7,7 @@ using System.Text;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using ASP.NET_Core_MVC_Playground.Areas.Identity.Data;
+using ASP.NET_Core_MVC_Playground.Data;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
@@ -24,17 +25,20 @@ namespace ASP.NET_Core_MVC_Playground.Areas.Identity.Pages.Account
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IEmailSender _emailSender;
         private readonly ILogger<ExternalLoginModel> _logger;
+        private readonly DataDbContext _db;
 
         public ExternalLoginModel(
             SignInManager<ApplicationUser> signInManager,
             UserManager<ApplicationUser> userManager,
             ILogger<ExternalLoginModel> logger,
-            IEmailSender emailSender)
+            IEmailSender emailSender,
+            DataDbContext db)
         {
             _signInManager = signInManager;
             _userManager = userManager;
             _logger = logger;
             _emailSender = emailSender;
+            _db = db;
         }
 
         [BindProperty]
@@ -143,6 +147,26 @@ namespace ASP.NET_Core_MVC_Playground.Areas.Identity.Pages.Account
                     if (result.Succeeded)
                     {
                         _logger.LogInformation("User created an account using {Name} provider.", info.LoginProvider);
+
+                        await _userManager.AddToRoleAsync(user, "User");
+
+                        // Create New Buyer
+                        Buyer newBuyer = new()
+                        {
+                            Id = user.Id,
+                            FirstName = user.FirstName,
+                            LastName = user.LastName,
+                        };
+                        _db.Buyers.Add(newBuyer);
+                        await _db.SaveChangesAsync();
+
+                        // Create Associated Shopping Basket
+                        ShoppingBasket newShoppingBasket = new()
+                        {
+                            BuyerId = newBuyer.Id
+                        };
+                        _db.ShoppingBaskets.Add(newShoppingBasket);
+                        await _db.SaveChangesAsync();
 
                         var userId = await _userManager.GetUserIdAsync(user);
                         var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
