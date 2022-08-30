@@ -12,6 +12,9 @@ input the following information following the exact format and replacing the dic
 ```
 // File Format
 {
+  "AppSettings: {
+    "Url": "https://localhost:PORT/"
+  },
   "ConnectionStrings": {
     "IdentityDb": "IdentityDb",
     "DataDb": "DataDb"
