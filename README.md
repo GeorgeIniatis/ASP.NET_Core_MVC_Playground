@@ -78,7 +78,7 @@ update-database -context DataDbContext
 3. Identity Migrations
 
 ```
-add-migration initialCreate -context IdentityDbContext - o "Areas/Identity/Data/Migrations"
+add-migration initialCreate -context IdentityDbContext -o "Areas/Identity/Data/Migrations"
 update-database -context IdentityDbContext
 ```
 4. Run XUnit Tests
