@@ -59,7 +59,7 @@ namespace ASP.NET_Core_MVC_Playground
             services.AddWestwindGlobalization(opt =>
             {
                 // Make sure the database you connect to exists
-                opt.ConnectionString = Configuration["DbResourceConfiguration:ConnectionString"];
+                opt.ConnectionString = Configuration.GetConnectionString("DataDb");
                 opt.GoogleApiKey = Configuration["DbResourceConfiguration:GoogleApiKey"];
                 // DeepL and Microsoft Translator not working in current package implementation
                 

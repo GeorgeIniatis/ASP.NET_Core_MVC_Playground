@@ -14,6 +14,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Azure.Identity;
+using Azure.Security.KeyVault.Secrets;
+using Azure.Extensions.AspNetCore.Configuration.Secrets;
 
 namespace ASP.NET_Core_MVC_Playground
 {
@@ -43,24 +46,24 @@ namespace ASP.NET_Core_MVC_Playground
                     logger.LogInformation("Attempting to seed DB");
 
                     SeedData seedData = new(services.GetRequiredService<DataDbContext>(),
-                                            services.GetRequiredService<ILogger<SeedData>>(),
-                                            new Helpers(services.GetRequiredService<DataDbContext>(),
-                                                        services.GetRequiredService<ILogger<Helpers>>(),
-                                                        services.GetRequiredService<IOptions<StripeOptions>>(),
-                                                        services.GetRequiredService<IOptions<AppOptions>>(),
-                                                        services.GetRequiredService<UserManager<ApplicationUser>>()));
+                        services.GetRequiredService<ILogger<SeedData>>(),
+                        new Helpers(services.GetRequiredService<DataDbContext>(),
+                            services.GetRequiredService<ILogger<Helpers>>(),
+                            services.GetRequiredService<IOptions<StripeOptions>>(),
+                            services.GetRequiredService<IOptions<AppOptions>>(),
+                            services.GetRequiredService<UserManager<ApplicationUser>>()));
                     seedData.Initialize(services);
                 }
                 catch (Exception ex)
                 {
                     logger.LogError(ex, "An error has occured seeding the DB");
                 }
-                
+
                 try
                 {
                     logger.LogInformation("Attempting to start application!");
                     host.Run();
-                    
+
                 }
                 catch (Exception ex)
                 {
@@ -83,10 +86,23 @@ namespace ASP.NET_Core_MVC_Playground
                 //    logging.AddConfiguration(context.Configuration.GetSection("Logging"));
                 //    logging.AddDebug();
                 //    logging.AddConsole();
-                //})
-                .ConfigureWebHostDefaults(webBuilder =>
+                //}
+                .ConfigureAppConfiguration((context, config) =>
                 {
-                    webBuilder.UseStartup<Startup>();
-                });
+                    if (context.HostingEnvironment.IsProduction())
+                        ConfigureKeyVault(config);
+                })
+                .ConfigureWebHostDefaults(webBuilder => { webBuilder.UseStartup<Startup>(); });
+
+        private static void ConfigureKeyVault(IConfigurationBuilder config)
+        {
+            string? keyVaultEndpoint = Environment.GetEnvironmentVariable("KEYVAULT_ENDPOINT");
+
+            if (keyVaultEndpoint is null)
+                throw new InvalidOperationException("Store the Key Vault endpoint in a KEYVAULT_ENDPOINT environment variable.");
+
+            var secretClient = new SecretClient(new(keyVaultEndpoint), new DefaultAzureCredential());
+            config.AddAzureKeyVault(secretClient, new KeyVaultSecretManager());
+        }
     }
 }
