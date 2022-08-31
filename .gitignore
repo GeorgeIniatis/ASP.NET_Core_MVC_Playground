@@ -6,6 +6,7 @@
 # User-specific folders
 ASP.NET_Core_MVC_Playground/Data/Migrations/
 ASP.NET_Core_MVC_Playground/Areas/Identity/Data/Migrations/
+ASP.NET_Core_MVC_Playground/Properties/PublishProfiles/
 
 # User-specific files
 *.rsuser
