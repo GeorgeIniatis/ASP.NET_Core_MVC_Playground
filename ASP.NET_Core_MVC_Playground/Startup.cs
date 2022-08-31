@@ -138,11 +138,11 @@ namespace ASP.NET_Core_MVC_Playground
                 facebookOptions.AppSecret = Configuration["Authentication:Facebook:AppSecret"];
             });
 
-            services.AddAuthentication().AddTwitter(twitterOptions =>
-            {
-                twitterOptions.ConsumerKey = Configuration["Authentication:Twitter:ApiKey"];
-                twitterOptions.ConsumerSecret = Configuration["Authentication:Twitter:SecretKey"];
-            });
+            //services.AddAuthentication().AddTwitter(twitterOptions =>
+            //{
+            //    twitterOptions.ConsumerKey = Configuration["Authentication:Twitter:ApiKey"];
+            //    twitterOptions.ConsumerSecret = Configuration["Authentication:Twitter:SecretKey"];
+            //});
 
             services.AddAuthentication().AddMicrosoftAccount(microsoftOptions =>
             {

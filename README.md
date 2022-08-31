@@ -60,7 +60,6 @@ input the following information following the exact format and replacing the dic
     "Password": "adminTestpa%$ssword3648"
   },
   "DbResourceConfiguration": {
-    "ConnectionString": "ConnectionString",
     "GoogleApiKey": "GoogleApiKey",
   },
   "Stripe": {
