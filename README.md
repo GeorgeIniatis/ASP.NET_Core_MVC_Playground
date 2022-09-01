@@ -2,6 +2,10 @@
 
 This is just a playground site where multiple ASP.NET Core, Javascript and Bootstrap elements have been implemented as a way to get familiar with them.
 
+### Azure Deployed Site Link
+
+[Link](https://aspcoreplayground.azurewebsites.net/) (**Try refreshing if you get an error**)
+
 ### Running Site Locally
 
 **Assuming you are using Visual Studio 2019 or Visual Studio 2022**
