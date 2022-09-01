@@ -2,9 +2,11 @@
 
 This is just a playground site where multiple ASP.NET Core, Javascript and Bootstrap elements have been implemented as a way to get familiar with them.
 
-### Azure Deployed Site Link
+### Azure Deployed Site
 
-[Link](https://aspcoreplayground.azurewebsites.net/) (**Try refreshing if you get an error**)
+* [Link](https://aspcoreplayground.azurewebsites.net/) (**Try refreshing if you get an error**)
+
+* The deployment utilised two separate SQL databases and a Key Vault to securely store and fetch any API keys and secrets needed by the web app.
 
 ### Running Site Locally
 
