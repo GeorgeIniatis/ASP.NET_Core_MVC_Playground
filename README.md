@@ -8,6 +8,8 @@ This is just a playground site where multiple ASP.NET Core, Javascript and Boots
 
 * The deployment utilised two separate SQL databases and a Key Vault to securely store and fetch any API keys and secrets needed by the web app.
 
+* Azure DevOps used for CI/CD.
+
 ### Running Site Locally
 
 **Assuming you are using Visual Studio 2019 or Visual Studio 2022**
